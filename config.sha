@@ -1,0 +1,8 @@
+export const baseUrl = {
+    authBase: 'http://192.168.1.19:9195/account',
+    topicBase: 'http://192.168.1.19:9191/topic',
+    subjectBase: 'http://192.168.1.19:9191/subject',
+    lessionBase: 'http://192.168.1.19:9191/lession',
+    flashcardBase: 'http://192.168.1.19:9191/flashcard',
+    questionBase: 'http://192.168.1.19:9191/question',
+}

@@ -48,7 +48,6 @@ function SearchScreen({ navigation }) {
                 })
             } else {
                 setSearchResult(null)
-                setSearchValue(null)
             }
         } catch (error) {
             console.log(error)
@@ -107,7 +106,7 @@ function SearchScreen({ navigation }) {
                     renderItem={renderItem}
                     keyExtractor={(item, index) => index.toString()}
                 />}
-                {searchResult === null && <Text>Input something for searching . . .</Text>}
+                {searchResult === null && searchValue !== null && <Text style={styles.notFoundSubject}>Not found subject with keyword:  {searchValue}</Text>}
             </View>
             <View style={styles.action}>
 
@@ -179,6 +178,10 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         width: '100%',
     },
+    notFoundSubject: {
+        color: '#fff',
+        fontSize: 30
+    }
     // iconSearch: {
     //     marginBottom: -10
     // },

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import SignInScreen from './LoginScreen/index';
 import HomeScreen from './HomeScreen/index';
@@ -9,6 +9,8 @@ import LoadingScreen from './LoadingScreen';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
+import { saveSignedInUser } from '../redux/actions/auth';
+import authAPI from '../apis/auth.api';
 
 MainStackNavigator.propTypes = {
 
@@ -19,6 +21,17 @@ const StackScreen = createStackNavigator();
 function MainStackNavigator(props) {
     const { accessToken } = useSelector(state => state.authReducer);
     const { isLoading } = useSelector(state => state.authReducer);
+    const { currentUser } = useSelector(state => state.authReducer);
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        const getMyInfo = async () => {
+            const myInfo = await authAPI.getMe(accessToken);
+            console.log(myInfo)
+            dispatch(saveSignedInUser(myInfo.account));
+        }
+        getMyInfo()
+    }, [])
 
     return (
         <NavigationContainer>

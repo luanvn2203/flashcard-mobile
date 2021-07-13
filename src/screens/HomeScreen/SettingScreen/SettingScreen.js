@@ -62,7 +62,6 @@ function SettingScreen({ navigation }) {
       });
   };
 
-  console.log(currentUser);
 
   return (
     <View style={styles.container}>

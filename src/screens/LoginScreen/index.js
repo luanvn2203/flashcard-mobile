@@ -113,7 +113,7 @@ const SignInScreen = ({ navigation }) => {
   const loginHandle = async (email, password) => {
     // dispatch(changeLoadingState(true))
     const response = await authAPI.login({ email: email, password: password });
-    console.log(response);
+    // console.log(response);
     if (response.status === "Success") {
       dispatch(
         saveAccessToken({

@@ -32,11 +32,11 @@ const ChangePasswordScreen = ({ navigation }) => {
     currentPassword: "",
     newPassword: "",
     confirmNewPassword: "",
-    isValidPassword: false,
-    isPasswordOK: false,
-    isNewPasswordOK: false,
-    isConfirmNewPasswordOK: "",
-    isConfirmMapWithNewPassword: "",
+    // isValidPassword: false,
+    isPasswordOK: true,
+    isNewPasswordOK: true,
+    isConfirmNewPasswordOK: true,
+    isConfirmMapWithNewPassword: true,
   });
 
   const handlePasswordChange = (val) => {
@@ -76,30 +76,31 @@ const ChangePasswordScreen = ({ navigation }) => {
   };
 
   const handleConfirmNewPasswordChange = (val) => {
-    if (val.trim().length >= 8) {
-      if (val.trim() === data.newPassword) {
-        setData({
-          ...data,
-          confirmNewPassword: val,
-          isValidPassword: true,
-          isConfirmNewPasswordOK: true,
-          isConfirmMapWithNewPassword: true,
-        });
-      } else {
-        setData({
-          ...data,
-          confirmNewPassword: val,
-          isValidPassword: true,
-          isConfirmNewPasswordOK: false,
-          isConfirmMapWithNewPassword: false,
-        });
-      }
+    // if (val.trim().length >= 8) {
+    if (val.trim() === data.newPassword) {
+      setData({
+        ...data,
+        confirmNewPassword: val,
+        // isValidPassword: true,
+        // isConfirmNewPasswordOK: true,
+        isConfirmMapWithNewPassword: true,
+      });
+      // } else {
+      //   setData({
+      //     ...data,
+      //     confirmNewPassword: val,
+      //     isValidPassword: true,
+      //     isConfirmNewPasswordOK: false,
+      //     isConfirmMapWithNewPassword: false,
+      //   });
+      // }
     } else {
       setData({
         ...data,
         confirmNewPassword: val,
         isValidPassword: false,
-        isConfirmNewPasswordOK: false,
+        // isConfirmNewPasswordOK: false,
+        isConfirmMapWithNewPassword: false,
       });
     }
   };
@@ -114,6 +115,7 @@ const ChangePasswordScreen = ({ navigation }) => {
       },
       accessToken
     );
+    console.log(response);
     if (response.status === "Success") {
       // console.log(response);
       Alert.alert("Change Password Success", `${response.message}`, [
@@ -173,6 +175,11 @@ const ChangePasswordScreen = ({ navigation }) => {
                   onChangeText={(val) => handlePasswordChange(val)}
                 />
               </View>
+              {data.isPasswordOK ? null : (
+                <Animatable.View animation="fadeInLeft" duration={500}>
+                  <Text style={styles.errorMsg}>Password Invalid</Text>
+                </Animatable.View>
+              )}
             </View>
 
             <View style={styles.gr_textbut}>
@@ -207,6 +214,11 @@ const ChangePasswordScreen = ({ navigation }) => {
                   onChangeText={(val) => handleNewPasswordChange(val)}
                 />
               </View>
+              {data.isNewPasswordOK ? null : (
+                <Animatable.View animation="fadeInLeft" duration={500}>
+                  <Text style={styles.errorMsg}>New Password Invalid</Text>
+                </Animatable.View>
+              )}
             </View>
 
             <View style={styles.gr_textbut}>
@@ -241,11 +253,30 @@ const ChangePasswordScreen = ({ navigation }) => {
                   onChangeText={(val) => handleConfirmNewPasswordChange(val)}
                 />
               </View>
+              {/* {data.isConfirmNewPasswordOK ? null : (
+                <Animatable.View animation="fadeInLeft" duration={500}>
+                  <Text style={styles.errorMsg}>
+                    Confirm New Password Invalid
+                  </Text>
+                </Animatable.View>
+              )} */}
+              {data.isConfirmMapWithNewPassword ? null : (
+                <Animatable.View animation="fadeInLeft" duration={500}>
+                  <Text style={styles.errorMsg}>
+                    Confirm New Password Not Map With New Password
+                  </Text>
+                </Animatable.View>
+              )}
             </View>
 
             <TouchableOpacity
               // onPress={() => { loginHandle(data.username, data.password) }}
-              // disabled={!data.emailOK || !data.passwordOK || !data.fullnameOK || !data.phoneOK || !data.addressOK}
+              disabled={
+                !data.isPasswordOK ||
+                !data.isNewPasswordOK ||
+                !data.isConfirmMapWithNewPassword ||
+                !data.isConfirmMapWithNewPassword
+              }
               // onPress={() => navigation.navigate("SignIn")}
               style={[
                 styles.button_ac,

@@ -47,34 +47,16 @@ const ProfileScreen = ({ navigation }) => {
     address: currentUser.address,
     gender: currentUser.gender,
     role: currentUser.roleId,
-    dob: currentUser.DOB,
+    dob: "",
     isValidFullname: true,
     isValidPhone: false,
-    emailOK: false,
-    passwordOK: false,
-    fullnameOK: false,
-    phoneOK: false,
-    addressOK: false,
-    dobOK: false,
+    // emailOK: false,
+    // passwordOK: false,
+    fullnameOK: true,
+    phoneOK: true,
+    addressOK: true,
+    dobOK: true,
   });
-
-  const handleEmailChange = (val) => {
-    if (val.length !== 0) {
-      setData({
-        ...data,
-        email: val,
-        check_handleEmailChange: true,
-        isValidUser: true,
-      });
-    } else {
-      setData({
-        ...data,
-        email: val,
-        check_handleEmailChange: false,
-        isValidUser: false,
-      });
-    }
-  };
 
   const handleFullnameChange = (val) => {
     if (val.trim().length > 0) {
@@ -143,8 +125,11 @@ const ProfileScreen = ({ navigation }) => {
     });
   };
 
-  const today = new Date();
-  const [date, setDate] = useState(currentUser.DOB);
+  const oldDOB = currentUser.DOB;
+  const dayInt = Date.parse(oldDOB);
+
+  const today = new Date(dayInt);
+  const [date, setDate] = useState(today);
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
 
@@ -166,6 +151,7 @@ const ProfileScreen = ({ navigation }) => {
 
   const handleSubmitUpdateProfile = async () => {
     // console.log(data);
+    // console.log(date);
     // console.log(interestTopicThis)
     const response = await authAPI.updateProfile(
       {
@@ -174,13 +160,15 @@ const ProfileScreen = ({ navigation }) => {
         roleId: data.role,
         phone: data.phone,
         address: data.address,
-        DOB: `${date}`.slice(0, 10),
+        DOB: `${date.toISOString()}`.slice(0, 10),
         gender: data.gender,
       },
       accessToken
     );
+    console.log(date);
+    console.log(response);
     if (response.status === "Success") {
-      // console.log(response);
+      console.log(response);
       const myInfo = await authAPI.getMe(accessToken);
       console.log(myInfo);
       dispatch(saveSignedInUser(myInfo.account));
@@ -192,7 +180,7 @@ const ProfileScreen = ({ navigation }) => {
       // }, 2000);
       //   navigation.navigate("HomeSettingScreen");
     } else {
-      // console.log(response)
+      // console.log(response);
       Alert.alert("Update Profile Failed", `${response.message}`, [
         { text: "Ok" },
       ]);
@@ -226,7 +214,8 @@ const ProfileScreen = ({ navigation }) => {
                   style={styles.textInput}
                   autoCapitalize="none"
                   value={data.email}
-                  //   editable="no"
+                  editable={false}
+                  // disable="true"
                   //   onChangeText={(val) => handleEmailChange(val)}
                   // onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
                 />
@@ -264,6 +253,11 @@ const ProfileScreen = ({ navigation }) => {
                   onChangeText={(val) => handleFullnameChange(val)}
                 />
               </View>
+              {data.fullnameOK ? null : (
+                <Animatable.View animation="fadeInLeft" duration={500}>
+                  <Text style={styles.errorMsg}>Fullname can not null</Text>
+                </Animatable.View>
+              )}
               {/* Phone Here */}
               <Text style={[styles.text_footer, { marginTop: 10 }]}>Phone</Text>
               <View style={styles.action}>
@@ -281,6 +275,13 @@ const ProfileScreen = ({ navigation }) => {
                   onChangeText={(val) => handlePhoneChange(val)}
                 />
               </View>
+              {data.phoneOK ? null : (
+                <Animatable.View animation="fadeInLeft" duration={500}>
+                  <Text style={styles.errorMsg}>
+                    Phone number must be 10 numbers
+                  </Text>
+                </Animatable.View>
+              )}
               {/* Address here */}
               <Text style={[styles.text_footer, { marginTop: 10 }]}>
                 Address
@@ -299,6 +300,11 @@ const ProfileScreen = ({ navigation }) => {
                   onChangeText={(val) => handleAddressChange(val)}
                 />
               </View>
+              {data.addressOK ? null : (
+                <Animatable.View animation="fadeInLeft" duration={500}>
+                  <Text style={styles.errorMsg}>Address can not null</Text>
+                </Animatable.View>
+              )}
               {/* Dob here */}
               {/* <Text style={[styles.text_footer, { marginTop: 10 }]}>DOB</Text>
                         <View style={styles.action}>
@@ -324,12 +330,17 @@ const ProfileScreen = ({ navigation }) => {
                     // placeholder="Your Address"
                     style={styles.textInput}
                     autoCapitalize="none"
-                    value={Moment(date).format("YYYY-MM-DD")}
+                    value={Moment(oldDOB).format("YYYY-MM-DD")}
+                    editable={false}
                     // onChangeText={(val) => handleAddressChange(val)}
                   />
                 </View>
                 <View>
-                  <Button onPress={showDatepicker} title="Pick your DOB" />
+                  <Button
+                    // style={styles.button_dob}
+                    onPress={showDatepicker}
+                    title="Pick your DOB"
+                  />
                 </View>
                 {show && (
                   <DateTimePicker
@@ -384,7 +395,11 @@ const ProfileScreen = ({ navigation }) => {
               {/* Button action */}
               <TouchableOpacity
                 // onPress={() => { loginHandle(data.username, data.password) }}
-                // disabled={!data.emailOK || !data.passwordOK || !data.fullnameOK || !data.phoneOK || !data.addressOK}
+                disabled={
+                  // !data.emailOK ||
+                  // !data.passwordOK ||
+                  !data.fullnameOK || !data.phoneOK || !data.addressOK
+                }
                 // onPress={() => navigation.navigate("SignIn")}
                 style={[
                   styles.button_ac,
@@ -481,5 +496,9 @@ const styles = StyleSheet.create({
   errorMsg: {
     color: "#FF0000",
     fontSize: 14,
+  },
+  button_dob: {
+    backgroundColor: "#fff",
+    color: "red",
   },
 });

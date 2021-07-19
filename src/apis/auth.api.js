@@ -75,9 +75,9 @@ const authAPI = {
     );
   },
 
-  updateHobbyTopic: (params) => {
+  updateHobbyTopic: (params, token) => {
     const url = baseUrl.authBase + "/update-interest";
-    const token = localStorage.getItem("accessToken");
+    // const token = localStorage.getItem("accessToken");
     return axiosClient.put(
       url,
       { params },

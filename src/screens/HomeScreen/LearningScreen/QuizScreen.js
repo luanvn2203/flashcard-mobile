@@ -14,6 +14,7 @@ import {
   StyleSheet,
   Button,
   FlatList,
+  Alert,
 } from "react-native";
 import { saveQuizIdTouched } from "../../../redux/actions/quiz";
 
@@ -37,6 +38,20 @@ const QuizScreen = ({ navigation }) => {
     }
   };
 
+  const createAlertConfirmTakeQuiz = () => {
+    Alert.alert("Confirm Take This Quiz", "Are you sure to Take This Quiz?", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      {
+        text: "OK",
+        onPress: () => navigation.navigate("TakeQuiz"),
+      },
+    ]);
+  };
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -47,7 +62,7 @@ const QuizScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text_header}>Quiz Screen</Text>
+      {/* <Text style={styles.text_header}>Quiz Screen</Text> */}
       {listQuiz && (
         <View>
           <FlatList
@@ -60,6 +75,7 @@ const QuizScreen = ({ navigation }) => {
                   dispatch(saveQuizIdTouched(item));
                   // console.log(item.lessionId);
                   navigation.navigate("TakeQuiz");
+                  // createAlertConfirmTakeQuiz();
                 }}
                 style={styles.item}
               >

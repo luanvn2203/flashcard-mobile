@@ -31,7 +31,7 @@ const HomeScreen = ({ navigation }) => {
     };
 
     getMyInfo();
-  }, [accessToken]);
+  }, []);
 
   const handleLogoutClick = async () => {
     // dispatch(changeLoadingState(true))

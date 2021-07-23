@@ -93,6 +93,7 @@ const LessionScreen = ({ navigation }) => {
         >
           <Card style={styles.card}>
             <Card.Header
+              // style={{ marginTop: 5 }}
               title={item.lessionName}
               thumbStyle={{ width: 30, height: 30 }}
               // thumb="https://gw.alipayobjects.com/zos/rmsportal/MRhHctKOineMbKAZslML.jpg"
@@ -132,7 +133,7 @@ const LessionScreen = ({ navigation }) => {
         {subjectInfo !== null ? (
           <View style={styles.viewHeader}>
             <View style={styles.textHeader}>
-              <Text style={styles.textInfo}>
+              <Text style={styles.textAuthor}>
                 Author: {subjectInfo.fullName}
               </Text>
               <Text style={styles.textInfo}>
@@ -196,7 +197,7 @@ export default LessionScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(112,193,248,0.2)",
+    backgroundColor: "#009387",
   },
   item: {
     backgroundColor: "rgba(112,193,248,0.2)",
@@ -208,7 +209,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
   card: {
-    marginTop: -10,
+    marginTop: 10,
   },
   subjectTitle: {
     color: "#fff",
@@ -226,32 +227,44 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   header: {
-    flex: 5,
+    // flex: 5,
+    marginBottom: 8,
+    marginVertical: 8,
+    marginHorizontal: 6,
+    // borderRadius: 18,
   },
   footer: {
-    flex: 5,
+    flex: 1,
   },
   viewHeader: {
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 15,
+    backgroundColor: "#fff",
+    borderRadius: 4,
   },
   textHeader: {
     justifyContent: "flex-start",
     paddingBottom: 5,
   },
   button_ac: {
-    width: "100%",
+    width: "95%",
     height: 50,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
+    marginBottom: 10,
   },
   buttonText: {
     fontSize: 18,
     fontWeight: "bold",
   },
   textInfo: {
-    color: "blue",
+    color: "#009387",
     fontSize: 15,
+  },
+  textAuthor: {
+    color: "#009387",
+    fontSize: 15,
+    marginTop: 10,
   },
 });

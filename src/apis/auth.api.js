@@ -20,7 +20,7 @@ const authAPI = {
   logout: (token) => {
     const url = baseUrl.authBase + "/logout";
     // const token = localStorage.getItem("accessToken");
-    return axiosClient.delete(url, {
+    return axiosClient.get(url, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

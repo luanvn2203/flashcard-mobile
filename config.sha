@@ -5,4 +5,5 @@ export const baseUrl = {
     lessionBase: 'http://192.168.1.19:9191/lession',
     flashcardBase: 'http://192.168.1.19:9191/flashcard',
     questionBase: 'http://192.168.1.19:9191/question',
+    submitBase: 'http://192.168.1.19:9191/test',
 }

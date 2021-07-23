@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
+
 import {
   View,
   Text,
@@ -31,14 +32,17 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { RadioButton } from "react-native-paper";
 import topicAPI from "../../../apis/topic.api";
 import authAPI from "../../../apis/auth.api";
+import { saveSignedInUser } from "../../../redux/actions/auth";
 
 const ChangeInterestTopicScreen = ({ navigation }) => {
   const { currentUser } = useSelector((state) => state.authReducer);
   const { accessToken } = useSelector((state) => state.authReducer);
   const [listTopic, setListTopic] = useState([]);
 
+  const dispatch = useDispatch();
+
   const [interestTopicThis, setInterestTopicThis] = useState([
-    // JSON.parse(currentUser.interestTopic)
+    // JSON.parse(currentUser.interestTopic),
   ]);
 
   //   console.log(currentUser.interestTopic);
@@ -48,7 +52,7 @@ const ChangeInterestTopicScreen = ({ navigation }) => {
   //   });
 
   const getData = async () => {
-    // console.log(JSON.parse(currentUser.interestTopic));
+    console.log(JSON.parse(currentUser.interestTopic));
     setInterestTopicThis(JSON.parse(currentUser.interestTopic));
     const res = await topicAPI.getAllTopic();
     // console.log(res);
@@ -69,7 +73,6 @@ const ChangeInterestTopicScreen = ({ navigation }) => {
         items[0].children.push(item);
       }
       setListTopic(items);
-      //   console.log(items);
     }
   };
 
@@ -94,8 +97,11 @@ const ChangeInterestTopicScreen = ({ navigation }) => {
       },
       accessToken
     );
-    console.log(respones);
+    // console.log(respones);
     if (respones.status === "Success") {
+      const myInfo = await authAPI.getMe(accessToken);
+      // console.log(myInfo);
+      dispatch(saveSignedInUser(myInfo.account));
       Alert.alert("Update Interest Success", `${respones.message}`, [
         { text: "OK" },
       ]);
@@ -106,10 +112,13 @@ const ChangeInterestTopicScreen = ({ navigation }) => {
     }
   };
 
+  // console.log(interestTopicThis);
+  // console.log(listTopic);
+  // console.log(JSON.parse(currentUser.interestTopic));
+
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text>Change Interest Topic screen</Text>
-
       {listTopic.length > 0 && (
         <View>
           {currentUser && (

@@ -2,6 +2,9 @@ import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
 import quizAPI from "../../../apis/quiz.api";
 import Feather from "react-native-vector-icons/Feather";
+import submitAPI from "../../../apis/submit.api";
+import { saveResultQuiz } from "../../../redux/actions/submit";
+import { CheckBox } from "react-native-elements";
 // import { createStackNavigator } from '@react-navigation/stack';
 import {
   Text,
@@ -9,8 +12,12 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-  Button,
+  // Button,
 } from "react-native";
+
+import { Checkbox } from "@ant-design/react-native";
+
+const CheckboxItem = Checkbox.CheckboxItem;
 
 const TakeQuizScreen = ({ navigation }) => {
   const { accessToken } = useSelector((state) => state.authReducer);
@@ -19,6 +26,11 @@ const TakeQuizScreen = ({ navigation }) => {
   const [counter, setCounter] = useState(0);
   const [optionChoosed, setOptionChoosed] = useState([]);
   const [userChoice, setUserChoice] = useState([]);
+  const [isClick, setIsClick] = useState(false);
+  // const [resultQuiz, setResultQuiz] = useState();
+
+  const dispatch = useDispatch();
+
   // const cc = {
   //   questionId: 21,
   //   optionId_choice: [40],
@@ -33,7 +45,7 @@ const TakeQuizScreen = ({ navigation }) => {
       accessToken
     );
     // const pr = JSON.parse(res.testFound);
-    console.log(res);
+    // console.log(res);
     if (res.status === "Success") {
       // setListQuiz(res.testFound);
       setListQuestion(res.listQuestion);
@@ -52,11 +64,17 @@ const TakeQuizScreen = ({ navigation }) => {
     optionChoosed[counter] = val;
     const xFactor = {
       questionId: listQuestion[counter].questionId,
-      optionId_choice: [optionChoosed],
+      optionId_choice: [optionChoosed[counter]],
     };
+    if (isClick) {
+      setIsClick(false);
+    } else {
+      setIsClick(true);
+    }
+
     userChoice[counter] = xFactor;
     // userChoice.push(xFactor);
-    console.log(userChoice);
+    // console.log(userChoice);
   };
 
   useEffect(() => {
@@ -68,6 +86,28 @@ const TakeQuizScreen = ({ navigation }) => {
 
   // console.log(listQuestion.length);
   // console.log(counter);
+
+  // console.log(touchedQuiz.total_question);
+  // console.log(touchedQuiz);
+
+  const handleSubmitQuiz = async () => {
+    const response = await submitAPI.submitQuiz(
+      {
+        quizTestId: touchedQuiz.id,
+        numOfQuestion: touchedQuiz.total_question,
+        userChoice: userChoice,
+      },
+      accessToken
+    );
+    // console.log(response);
+    if (response.status === "Success") {
+      // setResultQuiz(response);
+      dispatch(saveResultQuiz(response));
+      navigation.navigate("ResultQuiz");
+    }
+  };
+
+  // console.log(resultQuiz);
 
   return (
     <View style={{ flex: 1 }}>
@@ -92,6 +132,15 @@ const TakeQuizScreen = ({ navigation }) => {
           </View>
         </View>
       </View>
+      {/* /////////////////////////////////////// */}
+      {/* {listQuestion.length > 0 && (
+        <View>
+          {listQuestion[counter].options.map((option) => {
+            <CheckboxItem>{option.optionContent}</CheckboxItem>;
+          })}
+        </View>
+      )} */}
+      {/* Co loi thi bo code duoi dong nay */}
       <View style={styles.mainView}>
         {listQuestion.length > 0 && (
           <View style={styles.container}>
@@ -105,23 +154,31 @@ const TakeQuizScreen = ({ navigation }) => {
             </View>
             <View style={styles.mainOptionView}>
               {listQuestion[counter].options.map((value, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.optionContainer}
-                  onPress={() => handleOptionChoose(value.optionId)}
-                >
-                  <View>
-                    {/* <View key={index} style={styles.optionContainer}> */}
-                    <Text key={index} style={styles.option}>
-                      {value.optionContent}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+                <View key={index}>
+                  <CheckBox title={value.optionContent} />
+                </View>
+                // <TouchableOpacity
+                //   key={index}
+                //   style={
+                //     isClick
+                //       ? styles.optionContainerClick
+                //       : styles.optionContainerNotClick
+                //   }
+                //   onPress={() => handleOptionChoose(value.optionId)}
+                // >
+                //   <View>
+                //     {/* <View key={index} style={styles.optionContainer}> */}
+                //     <Text key={index} style={styles.option}>
+                //       {value.optionContent}
+                //     </Text>
+                //   </View>
+                // </TouchableOpacity>
               ))}
             </View>
           </View>
         )}
       </View>
+      {/* ////////////////////////////////////////// */}
       <View style={styles.buttonContainer}>
         <View style={styles.viewButtonLeft}>
           {counter >= 1 ? (
@@ -136,6 +193,20 @@ const TakeQuizScreen = ({ navigation }) => {
             </TouchableOpacity>
           ) : null}
         </View>
+
+        <View style={styles.viewButtonLeft}>
+          <TouchableOpacity
+            onPress={() => {
+              handleSubmitQuiz();
+            }}
+            style={styles.buttonLeft}
+          >
+            <View>
+              <Text style={styles.buttonText}>Submit</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.viewButtonRight}>
           {counter + 1 < listQuestion.length ? (
             <TouchableOpacity
@@ -200,11 +271,33 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 10,
   },
-  optionContainer: {
+  optionContainerNotClick: {
     width: "78%",
     alignItems: "flex-start",
     justifyContent: "center",
     backgroundColor: "#fff",
+    borderWidth: 1,
+    marginBottom: 15,
+    borderColor: "gray",
+    height: 50,
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+
+    elevation: 6,
+
+    borderRadius: 5,
+  },
+  optionContainerClick: {
+    width: "78%",
+    alignItems: "flex-start",
+    justifyContent: "center",
+    backgroundColor: "pink",
     borderWidth: 1,
     marginBottom: 15,
     borderColor: "gray",

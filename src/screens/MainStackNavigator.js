@@ -22,14 +22,14 @@ function MainStackNavigator(props) {
   const { currentUser } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const getMyInfo = async () => {
-      const myInfo = await authAPI.getMe(accessToken);
-      // console.log(myInfo)
-      dispatch(saveSignedInUser(myInfo.account));
-    };
-    getMyInfo();
-  }, []);
+  // useEffect(() => {
+  //   const getMyInfo = async () => {
+  //     const myInfo = await authAPI.getMe(accessToken);
+  //     // console.log(myInfo)
+  //     dispatch(saveSignedInUser(myInfo.account));
+  //   };
+  //   getMyInfo();
+  // }, []);
 
   return (
     <NavigationContainer>

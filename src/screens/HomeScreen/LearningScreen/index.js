@@ -23,6 +23,7 @@ import FlashcardScreen from "./FlashcardScreen";
 import QuestionScreen from "./QuestionScreen";
 import QuizScreen from "./QuizScreen";
 import TakeQuizScreen from "./TakeQuizScreen";
+import ResultQuizScreen from "./ResultQuizScreen";
 
 LearningScreen.propTypes = {};
 const DATA = [
@@ -80,6 +81,7 @@ function LearningScreen({ navigation }) {
       <HomeScreenStack.Screen name="Question" component={QuestionScreen} />
       <HomeScreenStack.Screen name="Quiz" component={QuizScreen} />
       <HomeScreenStack.Screen name="TakeQuiz" component={TakeQuizScreen} />
+      <HomeScreenStack.Screen name="ResultQuiz" component={ResultQuizScreen} />
     </HomeScreenStack.Navigator>
   );
 }

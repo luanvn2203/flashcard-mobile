@@ -27,6 +27,7 @@ const TakeQuizScreen = ({ navigation }) => {
   const [optionChoosed, setOptionChoosed] = useState([]);
   const [userChoice, setUserChoice] = useState([]);
   const [isClick, setIsClick] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
   // const [resultQuiz, setResultQuiz] = useState();
 
   const dispatch = useDispatch();
@@ -66,10 +67,10 @@ const TakeQuizScreen = ({ navigation }) => {
       questionId: listQuestion[counter].questionId,
       optionId_choice: [optionChoosed[counter]],
     };
-    if (isClick) {
-      setIsClick(false);
+    if (isChecked) {
+      setIsChecked(false);
     } else {
-      setIsClick(true);
+      setIsChecked(true);
     }
 
     userChoice[counter] = xFactor;
@@ -154,8 +155,12 @@ const TakeQuizScreen = ({ navigation }) => {
             </View>
             <View style={styles.mainOptionView}>
               {listQuestion[counter].options.map((value, index) => (
-                <View key={index}>
-                  <CheckBox title={value.optionContent} />
+                <View key={index} style={styles.optionContainer}>
+                  <CheckBox
+                    title={value.optionContent}
+                    checked={isChecked}
+                    onPress={() => handleOptionChoose(value.optionId)}
+                  />
                 </View>
                 // <TouchableOpacity
                 //   key={index}
@@ -271,27 +276,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 10,
   },
-  optionContainerNotClick: {
+  optionContainer: {
     width: "78%",
     alignItems: "flex-start",
     justifyContent: "center",
-    backgroundColor: "#fff",
-    borderWidth: 1,
     marginBottom: 15,
-    borderColor: "gray",
-    height: 50,
-
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-
-    elevation: 6,
-
-    borderRadius: 5,
   },
   optionContainerClick: {
     width: "78%",

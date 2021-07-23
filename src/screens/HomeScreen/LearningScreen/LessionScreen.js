@@ -40,23 +40,16 @@ const LessionScreen = ({ navigation }) => {
 
   const getPublicLession = async () => {
     // setIsLoading(true)
-    const response = await lessionAPI.getPublicLessionBySubId(
+    const response = await lessionAPI.getLessionBySubId(
       {
         subjectId: touchedSubject.subjectId,
       },
       accessToken
     );
-    // console.log(response);
     if (response.status === "Success") {
-      // dispatch(saveListLessionFoundBySubjectId(response.lession))
-      // setIsLoading(false)
       setTotal(response.total);
       setListLessionBySubjectId(response.lession);
     } else {
-      // setIsLoading(false)
-      // if (listLessionBySubjectId.length > 0) {
-      //     // dispatch(saveListLessionFoundBySubjectId(null))
-      // }
       setSubjectInfo(null);
       setResMessage(response.message);
     }

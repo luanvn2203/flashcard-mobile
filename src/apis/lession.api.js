@@ -3,9 +3,8 @@ import { baseUrl } from '../../config'
 
 
 const lessionAPI = {
-	getLessionBySubId: (params) => {
+	getLessionBySubId: (params, token) => {
 		const url = baseUrl.lessionBase + "/get-lession-by-subjectId";
-		const token = localStorage.getItem("accessToken");
 		return axiosClient.post(
 			url,
 			{ params },

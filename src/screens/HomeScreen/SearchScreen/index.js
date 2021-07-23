@@ -69,10 +69,10 @@ function SearchScreen({ navigation }) {
             <View style={styles.itemResult}>
 
                 <TouchableOpacity
-                    onPress={(subject) => {
+                    onPress={item.statusId === 1 ? (subject) => {
                         dispatch(saveSubjectIdTouched(item))
                         navigation.navigate("Lession")
-                    }}
+                    } : () => { console.log(item) }}
                 >
                     <Card style={styles.card} >
                         <Card.Header
@@ -89,8 +89,8 @@ function SearchScreen({ navigation }) {
                             </View>
                         </Card.Body>
                         <Card.Footer
-                            content='Public'
-                            extra="Anyone can see this subject"
+                            content={item.statusId == 1 ? "Public" : <Text style={styles.privateContent}>Private</Text>}
+
                         />
                     </Card>
                 </TouchableOpacity>
@@ -181,10 +181,13 @@ const styles = StyleSheet.create({
     notFoundSubject: {
         color: '#fff',
         fontSize: 30
+    },
+    privateContent: {
+        backgroundColor: 'rgb(143,94,255)',
+        width: 50,
+        borderRadius: 4,
+        color: '#FFF'
     }
-    // iconSearch: {
-    //     marginBottom: -10
-    // },
 
 
 });

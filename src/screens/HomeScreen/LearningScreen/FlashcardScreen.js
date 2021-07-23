@@ -27,7 +27,7 @@ const FlashcardScreen = ({ navigation }) => {
     const dispatch = useDispatch();
 
     const getListPublicFlashcardByLessionId = async () => {
-        const response = await flashcardAPI.getPulblicFlashcardByLessionId({
+        const response = await flashcardAPI.getFlashcardByLessionId({
             lessionId: lessionTouched.lessionId
         }, accessToken)
         if (response.status === "Success") {
@@ -47,7 +47,7 @@ const FlashcardScreen = ({ navigation }) => {
                 <TouchableOpacity
                     onPress={(e) => {
                         dispatch(saveTouchedFlashcard(item))
-                        navigation.navigate("Question")
+                        navigation.navigate("Flashcard content")
                     }}
                 >
                     <Card style={styles.card} >
@@ -97,7 +97,7 @@ export default FlashcardScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'rgba(112,193,248,0.2)'
+        backgroundColor: 'rgb(0,147,135)'
 
     },
     item: {

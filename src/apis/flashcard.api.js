@@ -2,9 +2,8 @@ import axiosClient from "./axiosClient";
 import { baseUrl } from '../../config'
 
 const flashcardAPI = {
-	getFlashcardByLessionId: (params) => {
+	getFlashcardByLessionId: (params, token) => {
 		const url = baseUrl.flashcardBase + "/get-flashcard-by-lessionid";
-		const token = localStorage.getItem("accessToken");
 		return axiosClient.post(
 			url,
 			{ params },

@@ -20,7 +20,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import InterestScreen from "./InterestScreen";
 import LessionScreen from "./LessionScreen";
 import FlashcardScreen from "./FlashcardScreen";
-import QuestionScreen from "./QuestionScreen";
+import FlashcardContentScreen from "./FlashcardContentScreen";
 import QuizScreen from "./QuizScreen";
 import TakeQuizScreen from "./TakeQuizScreen";
 import ResultQuizScreen from "./ResultQuizScreen";
@@ -78,7 +78,7 @@ function LearningScreen({ navigation }) {
       <HomeScreenStack.Screen name="Interest" component={InterestScreen} />
       <HomeScreenStack.Screen name="Lession" component={LessionScreen} />
       <HomeScreenStack.Screen name="Flashcard" component={FlashcardScreen} />
-      <HomeScreenStack.Screen name="Question" component={QuestionScreen} />
+      <HomeScreenStack.Screen name="Flashcard content" component={FlashcardContentScreen} />
       <HomeScreenStack.Screen name="Quiz" component={QuizScreen} />
       <HomeScreenStack.Screen name="TakeQuiz" component={TakeQuizScreen} />
       <HomeScreenStack.Screen name="ResultQuiz" component={ResultQuizScreen} />

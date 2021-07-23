@@ -28,7 +28,7 @@ function SettingScreen({ navigation }) {
   //   useEffect(() => {
   //     setUserInfo(currentUser);
   //   }, [currentUser]);
-
+  console.log(accessToken)
   const handleLogoutClick = async () => {
     authAPI
       .logout(accessToken)
@@ -41,10 +41,7 @@ function SettingScreen({ navigation }) {
             currentUser: null,
           })
         );
-        setTimeout(() => {
-          dispatch(changeLoadingState(false));
-          navigation.navigate("SignIn");
-        }, 1000);
+        navigation.navigate("SignIn");
       })
       .catch((err) => {
         dispatch(
@@ -55,10 +52,7 @@ function SettingScreen({ navigation }) {
             currentUser: null,
           })
         );
-        setTimeout(() => {
-          dispatch(changeLoadingState(false));
-          navigation.navigate("SignIn");
-        }, 1000);
+        navigation.navigate("SignIn");
       });
   };
 

@@ -2,7 +2,10 @@
 import Button from '@ant-design/react-native/lib/button';
 import { Card, WingBlank } from '@ant-design/react-native'
 import React, { useEffect, useState } from 'react';
-import { Text, View, ScrollView, SafeAreaView, FlatList, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
+import {
+    Text, View, ScrollView, SafeAreaView,
+    FlatList, StyleSheet, StatusBar, TouchableOpacity, Dimensions
+} from 'react-native';
 import subjectAPI from '../../../apis/subject.api';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveListSubjectInterest } from '../../../redux/actions/subject';
@@ -13,6 +16,7 @@ import { saveListLessionFoundBySubjectId, saveTouchedLession } from '../../../re
 import { Ionicons } from '@expo/vector-icons';
 import flashcardAPI from '../../../apis/flashcard.api';
 import { saveTouchedFlashcard } from '../../../redux/actions/flashcard';
+import HTML from 'react-native-render-html';
 
 
 const FlashcardScreen = ({ navigation }) => {
@@ -43,7 +47,7 @@ const FlashcardScreen = ({ navigation }) => {
     const renderItem = ({ item }) => {
         return (
             <WingBlank size='sm' style={styles.container}>
-                <Text></Text>
+
                 <TouchableOpacity
                     onPress={(e) => {
                         dispatch(saveTouchedFlashcard(item))
@@ -54,7 +58,7 @@ const FlashcardScreen = ({ navigation }) => {
                         <Card.Header
                             title={item.flashcardName}
                             thumbStyle={{ width: 30, height: 30 }}
-                            // thumb="https://gw.alipayobjects.com/zos/rmsportal/MRhHctKOineMbKAZslML.jpg"
+                            thumb="https://gw.alipayobjects.com/zos/rmsportal/MRhHctKOineMbKAZslML.jpg"
                             extra={<Text style={styles.author}>
                                 <Ionicons
                                     name="pricetag-sharp"
@@ -62,7 +66,7 @@ const FlashcardScreen = ({ navigation }) => {
                         />
                         <Card.Body>
                             <View style={{ minHeight: 20 }}>
-                                {/* <Text style={{ marginLeft: 16 }}>{item.dateOfCreate.slice(0,10)}</Text> */}
+                                <Text style={{ marginLeft: 16 }}>{item.dateOfCreate.slice(0, 10)}</Text>
                                 <Text style={{ marginLeft: 16, color: 'blue' }}>{item.author}</Text>
 
                             </View>

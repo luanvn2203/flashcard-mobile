@@ -31,6 +31,7 @@ const TakeQuizScreen = ({ navigation }) => {
   const [optionChoosed, setOptionChoosed] = useState([]);
   const [userChoice, setUserChoice] = useState([]);
   const [isClick, setIsClick] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
   // const [resultQuiz, setResultQuiz] = useState();
 
   const dispatch = useDispatch();
@@ -70,10 +71,10 @@ const TakeQuizScreen = ({ navigation }) => {
       questionId: listQuestion[counter].questionId,
       optionId_choice: [optionChoosed[counter]],
     };
-    if (isClick) {
-      setIsClick(false);
+    if (isChecked) {
+      setIsChecked(false);
     } else {
-      setIsClick(true);
+      setIsChecked(true);
     }
 
     userChoice[counter] = xFactor;
@@ -105,10 +106,93 @@ const TakeQuizScreen = ({ navigation }) => {
   console.log(listQuestion);
 
   return (
-    <View style={{ flex: 1 }} style={styles.container}>
-      <ScrollView>
-        <Text style={styles.text_header}>Take Quiz Screen</Text>
-
+    <View style={{ flex: 1 }}>
+      {/* <Text style={styles.text_header}>Take Quiz Screen</Text> */}
+      <View style={styles.headerContainer}>
+        <View style={styles.header}>
+          <View>
+            <Text style={{ marginLeft: 10, fontWeight: "bold", fontSize: 18 }}>
+              Questions
+            </Text>
+          </View>
+          <View style={styles.perQuestion}>
+            <Text
+              style={{
+                justifyContent: "center",
+                marginRight: 10,
+                fontSize: 18,
+              }}
+            >
+              {counter + 1 + "/" + listQuestion.length}
+            </Text>
+          </View>
+        </View>
+      </View>
+      {/* /////////////////////////////////////// */}
+      {/* {listQuestion.length > 0 && (
+        <View>
+          {listQuestion[counter].options.map((option) => {
+            <CheckboxItem>{option.optionContent}</CheckboxItem>;
+          })}
+        </View>
+      )} */}
+      {/* Co loi thi bo code duoi dong nay */}
+      <View style={styles.mainView}>
+        {listQuestion.length > 0 && (
+          <View style={styles.container}>
+            <View style={styles.mainViewText}>
+              <Text style={styles.textCounterQuestion}>
+                {counter + 1 + "."}
+              </Text>
+              <Text style={styles.text_question}>
+                {listQuestion[counter].questionContent}
+              </Text>
+            </View>
+            <View style={styles.mainOptionView}>
+              {listQuestion[counter].options.map((value, index) => (
+                <View key={index} style={styles.optionContainer}>
+                  <CheckBox
+                    title={value.optionContent}
+                    checked={isChecked}
+                    onPress={() => handleOptionChoose(value.optionId)}
+                  />
+                </View>
+                // <TouchableOpacity
+                //   key={index}
+                //   style={
+                //     isClick
+                //       ? styles.optionContainerClick
+                //       : styles.optionContainerNotClick
+                //   }
+                //   onPress={() => handleOptionChoose(value.optionId)}
+                // >
+                //   <View>
+                //     {/* <View key={index} style={styles.optionContainer}> */}
+                //     <Text key={index} style={styles.option}>
+                //       {value.optionContent}
+                //     </Text>
+                //   </View>
+                // </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        )}
+      </View>
+      {/* ////////////////////////////////////////// */}
+      <View style={styles.buttonContainer}>
+        <View style={styles.viewButtonLeft}>
+          {counter >= 1 ? (
+            <TouchableOpacity
+              onPress={() => handleChangeCounterPre()}
+              style={styles.buttonLeft}
+            >
+              <View>
+                <Feather name="chevron-left" size={20} color="#fff" />
+                {/* <Text style={styles.buttonText}>NEXT</Text> */}
+              </View>
+            </TouchableOpacity>
+          ) : null}
+        </View>
         {listQuestion && listQuestion.map((question, index) => {
           return (
             <WingBlank key={question.questionId} style={styles.question}>
@@ -119,9 +203,6 @@ const TakeQuizScreen = ({ navigation }) => {
             </WingBlank>
           )
         })}
-
-
-      </ScrollView>
     </View>
   );
 };
@@ -176,27 +257,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 10,
   },
-  optionContainerNotClick: {
+  optionContainer: {
     width: "78%",
     alignItems: "flex-start",
     justifyContent: "center",
-    backgroundColor: "#fff",
-    borderWidth: 1,
     marginBottom: 15,
-    borderColor: "gray",
-    height: 50,
-
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-
-    elevation: 6,
-
-    borderRadius: 5,
   },
   optionContainerClick: {
     width: "78%",

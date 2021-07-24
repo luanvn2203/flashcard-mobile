@@ -209,6 +209,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     textAlign: "center",
     backgroundColor: "rgba(255,255,255,0.2)",
+    borderRadius: 4, padding: 4
   },
   author: {
     marginLeft: "50%",

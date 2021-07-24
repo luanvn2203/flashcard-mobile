@@ -6,16 +6,20 @@ import submitAPI from "../../../apis/submit.api";
 import { saveResultQuiz } from "../../../redux/actions/submit";
 import { CheckBox } from "react-native-elements";
 // import { createStackNavigator } from '@react-navigation/stack';
+import HTML from 'react-native-render-html';
+
 import {
   Text,
   View,
   TouchableOpacity,
   Image,
   StyleSheet,
+  Dimensions,
   // Button,
 } from "react-native";
 
-import { Checkbox } from "@ant-design/react-native";
+import { Checkbox, WingBlank } from "@ant-design/react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 const CheckboxItem = Checkbox.CheckboxItem;
 
@@ -73,22 +77,13 @@ const TakeQuizScreen = ({ navigation }) => {
     }
 
     userChoice[counter] = xFactor;
-    // userChoice.push(xFactor);
-    // console.log(userChoice);
+
   };
 
   useEffect(() => {
     getData();
   }, [touchedQuiz]);
 
-  // console.log(listQuestion[counter]);
-  // // console.log(listQuestion[0]);
-
-  // console.log(listQuestion.length);
-  // console.log(counter);
-
-  // console.log(touchedQuiz.total_question);
-  // console.log(touchedQuiz);
 
   const handleSubmitQuiz = async () => {
     const response = await submitAPI.submitQuiz(
@@ -107,120 +102,26 @@ const TakeQuizScreen = ({ navigation }) => {
     }
   };
 
-  // console.log(resultQuiz);
+  console.log(listQuestion);
 
   return (
-    <View style={{ flex: 1 }}>
-      {/* <Text style={styles.text_header}>Take Quiz Screen</Text> */}
-      <View style={styles.headerContainer}>
-        <View style={styles.header}>
-          <View>
-            <Text style={{ marginLeft: 10, fontWeight: "bold", fontSize: 18 }}>
-              Questions
-            </Text>
-          </View>
-          <View style={styles.perQuestion}>
-            <Text
-              style={{
-                justifyContent: "center",
-                marginRight: 10,
-                fontSize: 18,
-              }}
-            >
-              {counter + 1 + "/" + listQuestion.length}
-            </Text>
-          </View>
-        </View>
-      </View>
-      {/* /////////////////////////////////////// */}
-      {/* {listQuestion.length > 0 && (
-        <View>
-          {listQuestion[counter].options.map((option) => {
-            <CheckboxItem>{option.optionContent}</CheckboxItem>;
-          })}
-        </View>
-      )} */}
-      {/* Co loi thi bo code duoi dong nay */}
-      <View style={styles.mainView}>
-        {listQuestion.length > 0 && (
-          <View style={styles.container}>
-            <View style={styles.mainViewText}>
-              <Text style={styles.textCounterQuestion}>
-                {counter + 1 + "."}
-              </Text>
-              <Text style={styles.text_question}>
-                {listQuestion[counter].questionContent}
-              </Text>
-            </View>
-            <View style={styles.mainOptionView}>
-              {listQuestion[counter].options.map((value, index) => (
-                <View key={index}>
-                  <CheckBox title={value.optionContent} />
-                </View>
-                // <TouchableOpacity
-                //   key={index}
-                //   style={
-                //     isClick
-                //       ? styles.optionContainerClick
-                //       : styles.optionContainerNotClick
-                //   }
-                //   onPress={() => handleOptionChoose(value.optionId)}
-                // >
-                //   <View>
-                //     {/* <View key={index} style={styles.optionContainer}> */}
-                //     <Text key={index} style={styles.option}>
-                //       {value.optionContent}
-                //     </Text>
-                //   </View>
-                // </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-        )}
-      </View>
-      {/* ////////////////////////////////////////// */}
-      <View style={styles.buttonContainer}>
-        <View style={styles.viewButtonLeft}>
-          {counter >= 1 ? (
-            <TouchableOpacity
-              onPress={() => handleChangeCounterPre()}
-              style={styles.buttonLeft}
-            >
-              <View>
-                <Feather name="chevron-left" size={20} color="#fff" />
-                {/* <Text style={styles.buttonText}>NEXT</Text> */}
-              </View>
-            </TouchableOpacity>
-          ) : null}
-        </View>
+    <View style={{ flex: 1 }} style={styles.container}>
+      <ScrollView>
+        <Text style={styles.text_header}>Take Quiz Screen</Text>
 
-        <View style={styles.viewButtonLeft}>
-          <TouchableOpacity
-            onPress={() => {
-              handleSubmitQuiz();
-            }}
-            style={styles.buttonLeft}
-          >
-            <View>
-              <Text style={styles.buttonText}>Submit</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+        {listQuestion && listQuestion.map((question, index) => {
+          return (
+            <WingBlank key={question.questionId} style={styles.question}>
+              <HTML source={{ html: question.questionContent }} imagesMaxWidth={(Dimensions.get('window').width - 100)} />
+              {question.options.length > 0 && question.options.map((option, index) => {
+                return <Text key={option.optionId}>{option.optionContent}</Text>
+              })}
+            </WingBlank>
+          )
+        })}
 
-        <View style={styles.viewButtonRight}>
-          {counter + 1 < listQuestion.length ? (
-            <TouchableOpacity
-              onPress={() => handleChangeCounterNext()}
-              style={styles.buttonRight}
-            >
-              <View>
-                <Feather name="chevron-right" size={20} color="#fff" />
-                {/* <Text style={styles.buttonText}>NEXT</Text> */}
-              </View>
-            </TouchableOpacity>
-          ) : null}
-        </View>
-      </View>
+
+      </ScrollView>
     </View>
   );
 };
@@ -230,10 +131,14 @@ export default TakeQuizScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "#fff",
+    backgroundColor: "rgb(22,157,158)",
     // justifyContent: "flex-end",
     // alignItems: "center",
     // height: "60%",
+  },
+  question: {
+    marginTop: 3,
+    backgroundColor: 'rgba(255,255,255,0.5)'
   },
   header: {
     flex: 1,

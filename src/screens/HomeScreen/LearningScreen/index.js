@@ -72,7 +72,7 @@ function LearningScreen({ navigation }) {
   const HomeScreenStack = createStackNavigator();
   return (
     <HomeScreenStack.Navigator
-      screenOptions={{ headerShown: true }}
+      screenOptions={{ headerShown: true, headerStyle: { backgroundColor: 'darkcyan' }, headerTintColor: '#fff' }}
       initialRouteName="InterestScreen"
     >
       <HomeScreenStack.Screen name="Interest" component={InterestScreen} />

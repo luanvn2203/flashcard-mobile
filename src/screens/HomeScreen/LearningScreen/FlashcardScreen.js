@@ -27,14 +27,21 @@ const FlashcardScreen = ({ navigation }) => {
     const dispatch = useDispatch();
 
     const getListPublicFlashcardByLessionId = async () => {
+        let isMounted = true;
+
         const response = await flashcardAPI.getFlashcardByLessionId({
             lessionId: lessionTouched.lessionId
         }, accessToken)
-        if (response.status === "Success") {
-            setListFlashcardFound(response.flashcard)
+        if (isMounted) {
+            if (response.status === "Success") {
+                setListFlashcardFound(response.flashcard)
+            } else {
+                setResMessage(response.message)
+            }
         } else {
-            setResMessage(response.message)
+            return isMounted = false
         }
+
     }
     useEffect(() => {
         getListPublicFlashcardByLessionId();
@@ -116,7 +123,8 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 30,
         textAlign: 'center',
-        backgroundColor: 'rgba(255,255,255,0.2)'
+        backgroundColor: 'rgba(255,255,255,0.2)',
+        borderRadius: 4, padding: 4
     },
     author: {
         marginLeft: '50%'

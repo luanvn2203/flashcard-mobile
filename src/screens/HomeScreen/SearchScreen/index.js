@@ -9,7 +9,8 @@ import {
     StatusBar,
     Alert,
     Button,
-    FlatList
+    FlatList,
+    ToastAndroid
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from 'react-native-paper';
@@ -24,6 +25,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { changeLoadingState, saveAccessToken, saveSignedInUser } from '../../../redux/actions/auth';
 import subjectAPI from '../../../apis/subject.api';
 import { saveSubjectIdTouched } from '../../../redux/actions/subject';
+import checkAcceptAPI from '../../../apis/check.accessibility';
+import privateSubjectAPI from '../../../apis/private.subject.api';
 
 
 function SearchScreen({ navigation }) {
@@ -53,8 +56,16 @@ function SearchScreen({ navigation }) {
             console.log(error)
         }
     }
+    const showToastWithGravityAndOffset = useCallback((message) => {
+        ToastAndroid.showWithGravityAndOffset(
+            message,
+            ToastAndroid.LONG,
+            ToastAndroid.BOTTOM,
+            25,
+            50
+        );
+    });
     const debounceDropDown = useCallback(debounce((nextValue) => searchSubject(nextValue), 1000), [])
-
     const textInputChange = (val) => {
         if (val.trim().length >= 4) {
             debounceDropDown(val)
@@ -63,6 +74,29 @@ function SearchScreen({ navigation }) {
     const handleValidValue = (val) => {
         //set state
     }
+
+    const showConfirmDialog = (subjectId) => {
+        return Alert.alert(
+            "This subject is private by author !",
+            "Do you want to use 10 point to request for seeing this subject content ?",
+            [
+                {
+                    text: "Yes",
+                    onPress: async () => {
+                        // send request subject
+                        const response = await privateSubjectAPI.requestSubject({ subjectId: subjectId }, accessToken)
+                        if (response) {
+                            showToastWithGravityAndOffset(response.message)
+                        }
+                    },
+                },
+                {
+                    text: "No",
+                },
+            ]
+        );
+    };
+
     const renderItem = ({ item }) => {
         return (
 
@@ -72,7 +106,17 @@ function SearchScreen({ navigation }) {
                     onPress={item.statusId === 1 ? (subject) => {
                         dispatch(saveSubjectIdTouched(item))
                         navigation.navigate("Lession")
-                    } : () => { console.log(item) }}
+                    } : async () => {
+                        console.log(item)
+                        const response = await checkAcceptAPI.checkAcceptSubject({ subjectId: item.subjectId }, accessToken)
+                        console.log(response)
+                        if (response.status === "Success") {
+                            dispatch(saveSubjectIdTouched(item))
+                            navigation.navigate("Lession")
+                        } else if (response.status === "Not Found Request") {
+                            showConfirmDialog(item.subjectId)
+                        }
+                    }}
                 >
                     <Card style={styles.card} >
                         <Card.Header
@@ -100,16 +144,13 @@ function SearchScreen({ navigation }) {
     return (
         <View style={{ height: '100%', backgroundColor: '#169d9e' }}>
             <StatusBar backgroundColor='#009387' barStyle="light-content" />
-            <View style={{ marginTop: 10 }}>
-                {searchResult !== null && <FlatList
-                    data={searchResult.result}
-                    renderItem={renderItem}
-                    keyExtractor={(item, index) => index.toString()}
-                />}
-                {searchResult === null && searchValue !== null && <Text style={styles.notFoundSubject}>Not found subject with keyword:  {searchValue}</Text>}
-            </View>
             <View style={styles.action}>
-
+                <FontAwesome
+                    style={styles.iconSearch}
+                    name="search"
+                    size={30}
+                    color='#fff'
+                />
                 <TextInput
 
                     keyboardType="email-address"
@@ -123,13 +164,22 @@ function SearchScreen({ navigation }) {
                     onChangeText={(val) => textInputChange(val)}
                     onEndEditing={(e) => handleValidValue(e.nativeEvent.text)}
                 />
-                {/* <FontAwesome
-                    style={styles.iconSearch}
-                    name="search"
-                    size={30}
-                    color='#fff'
-                /> */}
+
             </View>
+            <View style={{ marginTop: 10 }}>
+                {searchResult !== null && <FlatList
+                    data={searchResult.result}
+                    renderItem={renderItem}
+                    keyExtractor={(item, index) => index.toString()}
+                />}
+                {searchResult === null && searchValue !== null && <Text style={styles.notFoundSubject}>Not found subject with keyword:  {searchValue}</Text>}
+                {searchResult === null && searchValue === null && <View style={styles.placeholderSearch}>
+                    <Text style={styles.placeholderSearchText} >Type some text to search subject . . .</Text>
+                    <Text style={styles.placeholderSearchText}>Example: HTML, JAVA</Text>
+
+                </View>}
+            </View>
+
 
         </View>
     );
@@ -158,17 +208,16 @@ const styles = StyleSheet.create({
     subjectTitle: {
         color: '#fff',
         fontSize: 30,
-        textAlign: 'center'
+        textAlign: 'center',
+        borderRadius: 4, padding: 4
     },
     author: {
         marginLeft: '50%'
     },
     action: {
-        flexDirection: 'row',
-        position: 'absolute',
-        top: '90%',
-        width: '100%',
+        flexDirection: "row",
         zIndex: 1000,
+        marginTop: 10
     },
     textInput: {
         paddingLeft: 10,
@@ -176,7 +225,7 @@ const styles = StyleSheet.create({
         color: '#05375a',
         backgroundColor: '#fff',
         borderRadius: 5,
-        width: '100%',
+        width: '90%',
     },
     notFoundSubject: {
         color: '#fff',
@@ -187,6 +236,17 @@ const styles = StyleSheet.create({
         width: 50,
         borderRadius: 4,
         color: '#FFF'
+    },
+    iconSearch: {
+        width: '10%'
+    },
+    placeholderSearch: {
+        marginTop: "50%"
+    },
+    placeholderSearchText: {
+        textAlign: 'center',
+        color: '#fff',
+        fontSize: 19,
     }
 
 

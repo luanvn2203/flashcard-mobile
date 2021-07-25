@@ -1,29 +1,19 @@
-import Button from "@ant-design/react-native/lib/button";
 import { Card, WingBlank } from "@ant-design/react-native";
-import React, { useEffect, useState } from "react";
-import {
-  Text,
-  View,
-  ScrollView,
-  SafeAreaView,
-  FlatList,
-  StyleSheet,
-  StatusBar,
-  TouchableOpacity,
-} from "react-native";
-import subjectAPI from "../../../apis/subject.api";
-import { useDispatch, useSelector } from "react-redux";
-import { saveListSubjectInterest } from "../../../redux/actions/subject";
-import { createStackNavigator } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import lessionAPI from "../../../apis/lession.api";
+import { Ionicons } from "@expo/vector-icons";
 import Moment from "moment";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  Alert, FlatList, SafeAreaView, StyleSheet, Text, ToastAndroid, TouchableOpacity, View
+} from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import checkAcceptAPI from "../../../apis/check.accessibility";
+import lessionAPI from "../../../apis/lession.api";
+import privateLessionAPI from "../../../apis/private.lession.api";
+import subjectAPI from "../../../apis/subject.api";
 // import subjectAPI from "../../../apis/subject.api";
 import {
-  saveListLessionFoundBySubjectId,
-  saveTouchedLession,
+  saveTouchedLession
 } from "../../../redux/actions/lession";
-import { Ionicons } from "@expo/vector-icons";
 
 const LessionScreen = ({ navigation }) => {
   const { touchedSubject } = useSelector((state) => state.subjectReducer);
@@ -40,19 +30,26 @@ const LessionScreen = ({ navigation }) => {
 
   const getPublicLession = async () => {
     // setIsLoading(true)
+    let isMounted = true;
+
     const response = await lessionAPI.getLessionBySubId(
       {
         subjectId: touchedSubject.subjectId,
       },
       accessToken
     );
-    if (response.status === "Success") {
-      setTotal(response.total);
-      setListLessionBySubjectId(response.lession);
+    if (isMounted) {
+      if (response.status === "Success") {
+        setTotal(response.total);
+        setListLessionBySubjectId(response.lession);
+      } else {
+        setSubjectInfo(null);
+        setResMessage(response.message);
+      }
     } else {
-      setSubjectInfo(null);
-      setResMessage(response.message);
+      return isMounted = false
     }
+
   };
   const getSubjectInformation = async () => {
     const response = await subjectAPI.getSubjectById(
@@ -73,15 +70,55 @@ const LessionScreen = ({ navigation }) => {
   }, [touchedSubject]);
 
   //   console.log(listLessionBySubjectId);
-
+  const showToastWithGravityAndOffset = useCallback((message) => {
+    ToastAndroid.showWithGravityAndOffset(
+      message,
+      ToastAndroid.LONG,
+      ToastAndroid.BOTTOM,
+      25,
+      50
+    );
+  });
+  const showConfirmDialog = (lessionId) => {
+    console.log(lessionId)
+    return Alert.alert(
+      "This lession is private content !",
+      "Do you want to use 7 point to request for seeing this lession content ?",
+      [
+        {
+          text: "Yes",
+          onPress: async () => {
+            // send request subject
+            const response = await privateLessionAPI.requestLession({ lessionId: lessionId }, accessToken)
+            if (response) {
+              showToastWithGravityAndOffset(response.message)
+            }
+          },
+        },
+        {
+          text: "No",
+        },
+      ]
+    );
+  };
   const renderItem = ({ item }) => {
     return (
       <WingBlank size="sm" style={styles.container}>
         {/* <Text>Texttt</Text> */}
         <TouchableOpacity
-          onPress={(e) => {
-            dispatch(saveTouchedLession(item));
-            navigation.navigate("Flashcard");
+          onPress={item.statusId === 1 ? (subject) => {
+            dispatch(saveTouchedLession(item))
+            navigation.navigate("Flashcard")
+          } : async () => {
+            console.log(item)
+            const response = await checkAcceptAPI.checkAcceptLession({ lessionId: item.lessionId }, accessToken)
+            console.log(response)
+            if (response.status === "Success") {
+              dispatch(saveTouchedLession(item))
+              navigation.navigate("Flashcard")
+            } else if (response.status === "Not Found Request") {
+              showConfirmDialog(item.lessionId)
+            }
           }}
         >
           <Card style={styles.card}>
@@ -108,8 +145,8 @@ const LessionScreen = ({ navigation }) => {
               </View>
             </Card.Body>
             <Card.Footer
-              content="Public"
-              extra={item.createdDate.slice(0, 10)}
+              content={item.statusId == 1 ? "Public" : <Text style={styles.privateContent}>Private</Text>}
+
             />
           </Card>
         </TouchableOpacity>
@@ -209,6 +246,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     textAlign: "center",
     backgroundColor: "rgba(255,255,255,0.2)",
+    borderRadius: 4, padding: 4
   },
   author: {
     marginLeft: "50%",
@@ -259,5 +297,11 @@ const styles = StyleSheet.create({
     color: "#009387",
     fontSize: 15,
     marginTop: 10,
+  },
+  privateContent: {
+    backgroundColor: 'rgb(143,94,255)',
+    width: 50,
+    borderRadius: 4,
+    color: '#FFF'
   },
 });

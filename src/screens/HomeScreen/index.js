@@ -118,7 +118,7 @@ const HomeScreen = ({ navigation }) => {
         },
       })}
       tabBarOptions={{
-        activeTintColor: "tomato",
+        activeTintColor: "darkslateblue",
         inactiveTintColor: "gray",
       }}
       initialRouteName="Learning"

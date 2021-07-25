@@ -62,7 +62,6 @@ function SettingScreen({ navigation }) {
       });
   };
 
-
   return (
     <View style={styles.container}>
       {currentUser !== null && (
@@ -106,7 +105,7 @@ function SettingScreen({ navigation }) {
                 </View> */}
             <TouchableOpacity
               style={styles.button_css}
-              onPress={() => navigation.navigate("ProfileScreen")}
+              onPress={() => navigation.navigate("Profile")}
             >
               <Feather name="user-check" color="#fff" size={25} />
               <Text style={styles.button_text}>Update Profile</Text>

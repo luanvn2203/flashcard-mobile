@@ -83,15 +83,15 @@ function SettingScreen({ navigation }) {
               </View>
 
               <View style={styles.row}>
-                <View style={styles.section}>
+                {/* <View style={styles.section}>
                   <Paragraph style={[styles.paragraph, styles.caption]}>
                     100
                   </Paragraph>
                   <Caption style={styles.caption}>Questions</Caption>
-                </View>
+                </View> */}
                 <View style={styles.section}>
                   <Paragraph style={[styles.paragraph, styles.caption]}>
-                    1000
+                    {currentUser.point}
                   </Paragraph>
                   <Caption style={styles.caption}>Point</Caption>
                 </View>
@@ -113,7 +113,7 @@ function SettingScreen({ navigation }) {
 
             <TouchableOpacity
               style={styles.button_css}
-              onPress={() => navigation.navigate("ChangePasswordScreen")}
+              onPress={() => navigation.navigate("Password Setting")}
             >
               <Feather name="shield" color="#fff" size={25} />
               <Text style={styles.button_text}>Change Password</Text>
@@ -121,7 +121,7 @@ function SettingScreen({ navigation }) {
 
             <TouchableOpacity
               style={styles.button_css}
-              onPress={() => navigation.navigate("ChangeInterestTopicScreen")}
+              onPress={() => navigation.navigate("Change Interest Topics")}
             >
               <Feather name="bookmark" color="#fff" size={25} />
               <Text style={styles.button_text}>Change Interest Topic</Text>

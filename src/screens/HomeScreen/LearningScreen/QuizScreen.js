@@ -33,6 +33,7 @@ const QuizScreen = ({ navigation }) => {
     );
     // console.log(res);
     // const pr = JSON.parse(res.testFound);
+    console.log(res);
     if (res.status === "Success") {
       setListQuiz(res.testFound);
     }
@@ -59,6 +60,7 @@ const QuizScreen = ({ navigation }) => {
   }, [touchedSubject]);
 
   // console.log(listQuiz);
+  // console.log(touchedSubject.subjectId);
 
   return (
     <View style={styles.container}>

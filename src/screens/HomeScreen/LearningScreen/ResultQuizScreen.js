@@ -26,6 +26,7 @@ const ResultQuizScreen = ({
   max = 100,
 }) => {
   const { resultQuiz } = useSelector((state) => state.submitQuizReducer);
+  console.log(resultQuiz);
   const animatedValue = React.useRef(new Animated.Value(0)).current;
 
   const percentage = (resultQuiz.numOfCorrect / resultQuiz.totalQuestion) * 100;

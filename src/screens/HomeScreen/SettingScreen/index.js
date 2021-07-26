@@ -266,12 +266,12 @@ function SettingsScreen({ navigation }) {
         component={ProfileScreen}
       />
       <SettingScreenStack.Screen
-        options={{ headerShown: false }}
-        name="ChangePasswordScreen"
+        // options={{ headerShown: false }}
+        name="Password Setting"
         component={ChangePasswordScreen}
       />
       <SettingScreenStack.Screen
-        name="ChangeInterestTopicScreen"
+        name="Change Interest Topics"
         component={ChangeInterestTopicScreen}
       />
       <SettingScreenStack.Screen

@@ -3,7 +3,14 @@ import { Ionicons } from "@expo/vector-icons";
 import Moment from "moment";
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  Alert, FlatList, SafeAreaView, StyleSheet, Text, ToastAndroid, TouchableOpacity, View
+  Alert,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import checkAcceptAPI from "../../../apis/check.accessibility";
@@ -11,9 +18,7 @@ import lessionAPI from "../../../apis/lession.api";
 import privateLessionAPI from "../../../apis/private.lession.api";
 import subjectAPI from "../../../apis/subject.api";
 // import subjectAPI from "../../../apis/subject.api";
-import {
-  saveTouchedLession
-} from "../../../redux/actions/lession";
+import { saveTouchedLession } from "../../../redux/actions/lession";
 
 const LessionScreen = ({ navigation }) => {
   const { touchedSubject } = useSelector((state) => state.subjectReducer);
@@ -47,9 +52,8 @@ const LessionScreen = ({ navigation }) => {
         setResMessage(response.message);
       }
     } else {
-      return isMounted = false
+      return (isMounted = false);
     }
-
   };
   const getSubjectInformation = async () => {
     const response = await subjectAPI.getSubjectById(
@@ -80,7 +84,7 @@ const LessionScreen = ({ navigation }) => {
     );
   });
   const showConfirmDialog = (lessionId) => {
-    console.log(lessionId)
+    console.log(lessionId);
     return Alert.alert(
       "This lession is private content !",
       "Do you want to use 7 point to request for seeing this lession content ?",
@@ -89,9 +93,12 @@ const LessionScreen = ({ navigation }) => {
           text: "Yes",
           onPress: async () => {
             // send request subject
-            const response = await privateLessionAPI.requestLession({ lessionId: lessionId }, accessToken)
+            const response = await privateLessionAPI.requestLession(
+              { lessionId: lessionId },
+              accessToken
+            );
             if (response) {
-              showToastWithGravityAndOffset(response.message)
+              showToastWithGravityAndOffset(response.message);
             }
           },
         },
@@ -106,20 +113,27 @@ const LessionScreen = ({ navigation }) => {
       <WingBlank size="sm" style={styles.container}>
         {/* <Text>Texttt</Text> */}
         <TouchableOpacity
-          onPress={item.statusId === 1 ? (subject) => {
-            dispatch(saveTouchedLession(item))
-            navigation.navigate("Flashcard")
-          } : async () => {
-            console.log(item)
-            const response = await checkAcceptAPI.checkAcceptLession({ lessionId: item.lessionId }, accessToken)
-            console.log(response)
-            if (response.status === "Success") {
-              dispatch(saveTouchedLession(item))
-              navigation.navigate("Flashcard")
-            } else if (response.status === "Not Found Request") {
-              showConfirmDialog(item.lessionId)
-            }
-          }}
+          onPress={
+            item.statusId === 1
+              ? (subject) => {
+                  dispatch(saveTouchedLession(item));
+                  navigation.navigate("Flashcard");
+                }
+              : async () => {
+                  console.log(item);
+                  const response = await checkAcceptAPI.checkAcceptLession(
+                    { lessionId: item.lessionId },
+                    accessToken
+                  );
+                  console.log(response);
+                  if (response.status === "Success") {
+                    dispatch(saveTouchedLession(item));
+                    navigation.navigate("Flashcard");
+                  } else if (response.status === "Not Found Request") {
+                    showConfirmDialog(item.lessionId);
+                  }
+                }
+          }
         >
           <Card style={styles.card}>
             <Card.Header
@@ -145,8 +159,13 @@ const LessionScreen = ({ navigation }) => {
               </View>
             </Card.Body>
             <Card.Footer
-              content={item.statusId == 1 ? "Public" : <Text style={styles.privateContent}>Private</Text>}
-
+              content={
+                item.statusId == 1 ? (
+                  "Public"
+                ) : (
+                  <Text style={styles.privateContent}>Private</Text>
+                )
+              }
             />
           </Card>
         </TouchableOpacity>
@@ -246,7 +265,8 @@ const styles = StyleSheet.create({
     fontSize: 30,
     textAlign: "center",
     backgroundColor: "rgba(255,255,255,0.2)",
-    borderRadius: 4, padding: 4
+    borderRadius: 4,
+    padding: 4,
   },
   author: {
     marginLeft: "50%",
@@ -299,9 +319,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   privateContent: {
-    backgroundColor: 'rgb(143,94,255)',
+    backgroundColor: "rgb(143,94,255)",
     width: 50,
     borderRadius: 4,
-    color: '#FFF'
+    color: "#FFF",
   },
 });

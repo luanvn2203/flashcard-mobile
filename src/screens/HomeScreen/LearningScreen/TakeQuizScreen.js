@@ -1,166 +1,63 @@
-import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
-import quizAPI from "../../../apis/quiz.api";
-import Feather from "react-native-vector-icons/Feather";
-import submitAPI from "../../../apis/submit.api";
-import { saveResultQuiz } from "../../../redux/actions/submit";
-import { CheckBox } from "react-native-elements";
-import HTML from "react-native-render-html";
-import { useForm } from "react-hook-form";
-
 // import { createStackNavigator } from '@react-navigation/stack';
 import {
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
   Dimensions,
   ScrollView,
-  // Button,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Button,
 } from "react-native";
+import { CheckBox } from "react-native-elements";
+import HTML from "react-native-render-html";
+import Feather from "react-native-vector-icons/Feather";
+import { useDispatch, useSelector } from "react-redux";
+import quizAPI from "../../../apis/quiz.api";
+import submitAPI from "../../../apis/submit.api";
+import { saveResultQuiz } from "../../../redux/actions/submit";
+import CheckboxGroup from "react-native-checkbox-group";
 
 const TakeQuizScreen = ({ navigation }) => {
   const { accessToken } = useSelector((state) => state.authReducer);
   const { touchedQuiz } = useSelector((state) => state.quizReducer);
   const [listQuestion, setListQuestion] = useState([]);
-  const [counter, setCounter] = useState(0);
-  const [optionChoosed, setOptionChoosed] = useState({
-    questionId: "",
-    options: [{ optionId: "", checked: false }],
-  });
+  const [checked, setChecked] = useState(false);
   const [userChoice, setUserChoice] = useState([]);
-  const [isClick, setIsClick] = useState();
-  const [isChecked, setIsChecked] = useState(false);
-  const [isOptionChecked, setIsOptionChecked] = useState([]);
-  const [userDo, setUserDo] = useState([]);
-  // const [resultQuiz, setResultQuiz] = useState();
-
-  // optionChecked[117] = true;
 
   const dispatch = useDispatch();
-  let check = "";
-  // const cc = {
-  //   questionId: 21,
-  //   optionId_choice: [40],
-  // };
 
   const getData = async () => {
-    // console.log(JSON.parse(currentUser.interestTopic));
     const res = await quizAPI.getTakeQuizQuestions(
       {
         quizTestId: touchedQuiz.id,
       },
       accessToken
     );
-    // const pr = JSON.parse(res.testFound);
     console.log(res);
     if (res.status === "Success") {
-      // setListQuiz(res.testFound);
+      const listData = res.listQuestion;
+      listData.map((question) => {
+        const checkboxes = [];
+        if (question.options) {
+          question.options.map((option, index) => {
+            const value = {
+              label: option.optionContent,
+              value: option.optionId,
+            };
+            checkboxes.push(value);
+          });
+        }
+        question.options = checkboxes;
+      });
+      console.log(listData);
       setListQuestion(res.listQuestion);
     }
   };
 
-  const handleChangeCounterNext = () => {
-    setCounter(counter + 1);
-  };
-
-  const handleChangeCounterPre = () => {
-    setCounter(counter - 1);
-  };
-
-  const handleOptionChoose = (val, i) => {
-    // optionChoosed[counter] = val;
-    // const xFactor = {
-    //   questionId: listQuestion[counter].questionId,
-    //   optionId_choice: [optionChoosed[counter]],
-    // };
-    // // if (isOptionChecked[counter]) {
-    // //   setIsOptionChecked[counter] = false;
-    // // } else {
-    // //   setIsOptionChecked[counter] = true;
-    // // }
-    // // console.log(optionChecked[val.optionId]);
-    // console.log(val.optionId);
-    const x = {
-      questionId: listQuestion[counter].questionId,
-      userOptionId: val.optionId,
-    };
-    userDo.push(x);
-    isOptionChecked[val.optionId] = true;
-    console.log(userDo);
-    // console.log(listQuestion[counter].questionId);
-    // console.log(val.optionId);
-    // console.log(i);
-    // setUserDo()
-  };
-
-  const handleChecked = (val) => {
-    console.log(check);
-    let options = [];
-    for (let index = 0; index < listQuestion.length; index++) {
-      if (listQuestion[index].questionId === val.questionId) {
-        for (let i = 0; i < listQuestion[index].options.length; i++) {
-          let optionIdObject = {
-            questionId: val.questionId,
-            optionId: listQuestion[index].options[i].optionId,
-            checked: false,
-          };
-
-          options.push(optionIdObject);
-        }
-      }
-    }
-    for (let u = 0; u < options.length; u++) {
-      if (val.optionId === options[u].optionId) {
-        for (let e = 0; e < optionChoosed.options.length; e++) {
-          if (optionChoosed.options[e].optionId === options[u].optionId) {
-          } else {
-            let a = {
-              optionId: val.optionId,
-              checked: !options[u].checked,
-            };
-            // optionChoosed.options.concat(a);
-            console.log("test");
-            optionChoosed.options.push(a);
-          }
-        }
-      }
-    }
-    setOptionChoosed({
-      questionId: val.questionId,
-      options: [...optionChoosed.options],
-    });
-
-    // console.log("khong le undefined thiet " + isOptionChecked[val.optionId]);
-    // if (isOptionChecked[val.optionId] === "undefined") {
-    //   isOptionChecked[val.optionId] = false;
-    // } else {
-    //   if (isOptionChecked[val.optionId] === false) {
-    //     isOptionChecked[val.optionId] = true;
-    //   } else {
-    //     isOptionChecked[val.optionId] = false;
-    //   }
-    // }
-    // if (isOptionChecked[val.optionId] === "undefined" || false) {
-    //   isOptionChecked[val.optionId] = true;
-    // } else {
-    //   isOptionChecked[val.optionId] = false;
-    // }
-    // console.log(isOptionChecked[val.optionId]);
-  };
-  console.log(optionChoosed.options);
   useEffect(() => {
     getData();
   }, [touchedQuiz]);
-
-  // // console.log(listQuestion[0]);
-
-  // console.log(listQuestion.length);
-  // console.log(counter);
-
-  // console.log(touchedQuiz.total_question);
-  // console.log(touchedQuiz);
 
   const handleSubmitQuiz = async () => {
     const response = await submitAPI.submitQuiz(
@@ -171,140 +68,86 @@ const TakeQuizScreen = ({ navigation }) => {
       },
       accessToken
     );
-    // console.log(response);
+    console.log(response);
     if (response.status === "Success") {
-      // setResultQuiz(response);
       dispatch(saveResultQuiz(response));
       navigation.navigate("ResultQuiz");
     }
   };
 
-  // console.log(resultQuiz);
+  const handleCheckBoxPress = (optionId, questionId) => {
+    console.log(optionId, questionId);
+    setChecked(!checked);
+  };
+  console.log(userChoice);
+
+  const handleSubmit = () => {
+    console.log(userChoice);
+  };
   return (
-    <View style={{ flex: 1 }}>
-      {/* <Text style={styles.text_header}>Take Quiz Screen</Text> */}
-      <View style={styles.headerContainer}>
-        <View style={styles.header}>
-          <View>
-            <Text style={{ marginLeft: 10, fontWeight: "bold", fontSize: 18 }}>
-              Questions
-            </Text>
-          </View>
-          <View style={styles.perQuestion}>
-            <Text
-              style={{
-                justifyContent: "center",
-                marginRight: 10,
-                fontSize: 18,
-              }}
-            >
-              {counter + 1 + "/" + listQuestion.length}
-            </Text>
-          </View>
-        </View>
-      </View>
-      {/* /////////////////////////////////////// */}
-      {/* {listQuestion.length > 0 && (
+    <ScrollView style={{ flex: 1 }}>
+      {listQuestion.length > 0 && (
         <View>
-          {listQuestion[counter].options.map((option) => {
-            <CheckboxItem>{option.optionContent}</CheckboxItem>;
+          {listQuestion.map((question, index) => {
+            return (
+              <View key={index} style={styles.question}>
+                <View>
+                  <Text style={styles.questionIndex}>
+                    Question {index + 1} :
+                  </Text>
+                  <HTML
+                    source={{ html: question.questionContent }}
+                    imagesMaxWidth={Dimensions.get("window").width - 100}
+                    contentWidth={Dimensions.get("window").width}
+                  />
+                  {question.options && (
+                    <CheckboxGroup
+                      key={question.questionId}
+                      callback={(selected) => {
+                        let isExist = userChoice.findIndex(
+                          (item, index) =>
+                            item.questionId === question.questionId
+                        );
+                        console.log(isExist);
+                        console.log(question.questionId);
+
+                        if (isExist !== -1) {
+                          userChoice[isExist] = {
+                            questionId: question.questionId,
+                            optionId_choice: selected,
+                          };
+                        } else {
+                          userChoice.push({
+                            questionId: question.questionId,
+                            optionId_choice: selected,
+                          });
+                        }
+                        console.log(question.questionId);
+                        console.log(selected);
+                      }}
+                      iconColor={"#00a2dd"}
+                      iconSize={30}
+                      checkedIcon="ios-checkbox-outline"
+                      uncheckedIcon="ios-square-outline"
+                      checkboxes={question.options}
+                      labelStyle={{
+                        color: "#333",
+                      }}
+                      rowStyle={{
+                        flexDirection: "row",
+                      }}
+                      rowDirection={"column"}
+                    />
+                  )}
+                </View>
+              </View>
+            );
           })}
         </View>
-      )} */}
-      {/* Co loi thi bo code duoi dong nay */}
-      {/* <ScrollView style={styles.scrollview}> */}
-      <View style={styles.mainView}>
-        {listQuestion.length > 0 && (
-          <View style={styles.container}>
-            <ScrollView>
-              <View style={styles.mainViewText}>
-                <Text style={styles.textCounterQuestion}>
-                  {counter + 1 + "."}
-                </Text>
-                <HTML
-                  source={{ html: listQuestion[counter].questionContent }}
-                  imagesMaxWidth={Dimensions.get("window").width - 100}
-                  contentWidth={Dimensions.get("window").width}
-                />
-                {/* <Text style={styles.text_question}>
-                
-                {listQuestion[counter].questionContent}
-              </Text> */}
-              </View>
-              <View style={styles.mainOptionView}>
-                {listQuestion[counter].options.map((value, index) => (
-                  <View key={index} style={styles.optionContainer}>
-                    <CheckBox
-                      title={value.optionContent}
-                      // checked={
-                      //   isOptionChecked[value.optionId] === "undefined"
-                      //     ? false
-                      //     : isOptionChecked[value.optionId]
-                      // }
-                      {...optionChoosed.options.map((value) => {
-                        if (value.optionId === value.optionId) {
-                          check = value;
-                        }
-                      })}
-                      checked={
-                        value.optionId === check.optionId
-                          ? check.checked
-                          : false
-                      }
-                      onPress={() => handleChecked(value)}
-                    />
-                  </View>
-                ))}
-              </View>
-            </ScrollView>
-          </View>
-        )}
-      </View>
-      {/* ////////////////////////////////////////// */}
-      <View style={styles.buttonContainer}>
-        <View style={styles.viewButtonLeft}>
-          {counter >= 1 ? (
-            <TouchableOpacity
-              onPress={() => handleChangeCounterPre()}
-              style={styles.buttonLeft}
-            >
-              <View>
-                <Feather name="chevron-left" size={20} color="#fff" />
-                {/* <Text style={styles.buttonText}>NEXT</Text> */}
-              </View>
-            </TouchableOpacity>
-          ) : null}
-        </View>
+      )}
 
-        <View style={styles.viewButtonLeft}>
-          <TouchableOpacity
-            onPress={() => {
-              handleSubmitQuiz();
-            }}
-            style={styles.buttonLeft}
-          >
-            <View>
-              <Text style={styles.buttonText}>Submit</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.viewButtonRight}>
-          {counter + 1 < listQuestion.length ? (
-            <TouchableOpacity
-              onPress={() => handleChangeCounterNext()}
-              style={styles.buttonRight}
-            >
-              <View>
-                <Feather name="chevron-right" size={20} color="#fff" />
-                {/* <Text style={styles.buttonText}>NEXT</Text> */}
-              </View>
-            </TouchableOpacity>
-          ) : null}
-        </View>
-      </View>
-      {/* </ScrollView> */}
-    </View>
+      <Button onPress={handleSubmitQuiz} title={"submit"} />
+    </ScrollView>
   );
 };
 
@@ -313,148 +156,15 @@ export default TakeQuizScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "#fff",
-    // justifyContent: "flex-end",
-    // alignItems: "center",
-    // height: "60%",
+    backgroundColor: "rgb(0,139,139)",
   },
-  header: {
-    flex: 1,
-    // backgroundColor: "#fff",
-    flexDirection: "row",
-    width: "88%",
+  question: {
+    backgroundColor: "rgba(255,255,255,0.5)",
+    marginTop: 5,
+    borderRadius: 4,
+    minHeight: 80,
   },
-  headerContainer: {
-    flex: 1,
-    alignItems: "center",
-    marginBottom: 30,
-    marginTop: 30,
-    // backgroundColor: "yellow",
-  },
-  text_question: {
-    fontSize: 20,
-    // textAlign: "left",
-    // alignItems: "flex-start",
-  },
-  textCounterQuestion: {
-    fontSize: 20,
-    color: "#009387",
-    marginRight: 10,
-  },
-  questionContainer: {
-    // marginLeft: 20,
-    flexDirection: "row",
-    // backgroundColor: "pink",
-    width: "88%",
-    marginBottom: 30,
-    justifyContent: "center",
-  },
-  option: {
-    // color: "red",
-    fontSize: 16,
-    marginLeft: 10,
-  },
-  optionContainer: {
-    width: "78%",
-    alignItems: "flex-start",
-    justifyContent: "center",
-    marginBottom: 15,
-  },
-  optionContainerClick: {
-    width: "78%",
-    alignItems: "flex-start",
-    justifyContent: "center",
-    backgroundColor: "pink",
-    borderWidth: 1,
-    marginBottom: 15,
-    borderColor: "gray",
-    height: 50,
-
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-
-    elevation: 6,
-
-    borderRadius: 5,
-  },
-  perQuestion: {
-    flex: 1,
-    // backgroundColor: "blue",
-    alignItems: "flex-end",
-  },
-  buttonLeft: {
-    backgroundColor: "#009387",
-    width: 60,
-    height: 60,
-    justifyContent: "center",
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 100,
-    marginLeft: 30,
-  },
-  buttonRight: {
-    backgroundColor: "#009387",
-    width: 60,
-    height: 60,
-    justifyContent: "center",
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 100,
-    marginRight: 30,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 14,
-    // textAlign: "center",
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    marginTop: 30,
-    // backgroundColor: "green",
-    marginBottom: 20,
-  },
-  viewButtonRight: {
-    flex: 1,
-    // justifyContent: "flex-end",
-    alignItems: "flex-end",
-    // backgroundColor: "pink",
-    // marginRight: 10,
-  },
-  viewButtonLeft: {
-    flex: 1,
-    // justifyContent: "flex-end",
-    // backgroundColor: "blue",
-  },
-  mainView: {
-    flex: 7,
-    // backgroundColor: "pink",
-    justifyContent: "flex-start",
-  },
-  mainViewText: {
-    flex: 3,
-    flexDirection: "row",
-    marginBottom: 30,
-    // alignItems: "flex-start",
-    marginLeft: 15,
-    // backgroundColor: "pink",
-    marginRight: 15,
-  },
-  mainOptionView: {
-    width: "100%",
-    flex: 7,
-    // backgroundColor: "gray",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  scrollview: {
-    // width: Dimensions.get("window").width,
-    // flex: 7 ,
-    // backgroundColor: "pink",
-    // justifyContent: "flex-start",
+  questionIndex: {
+    fontWeight: "bold",
   },
 });

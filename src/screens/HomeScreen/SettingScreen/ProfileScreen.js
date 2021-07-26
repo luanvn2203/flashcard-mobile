@@ -192,9 +192,9 @@ const ProfileScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#009387" barStyle="light-content" />
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Text style={styles.text_header}>Profile</Text>
-      </View>
+      </View> */}
 
       {currentUser !== null && (
         <Animatable.View animation="fadeInUpBig" style={styles.footer}>
@@ -387,7 +387,7 @@ const ProfileScreen = ({ navigation }) => {
                   onValueChange={(itemValue) => handleRoleChange(itemValue)}
                 >
                   {/* <Picker.Item label="Role..." /> */}
-                  <Picker.Item label="Student" value="1" />
+                  <Picker.Item label="User" value="1" />
                   <Picker.Item label="Donor" value="3" />
                 </Picker>
               </View>
@@ -455,6 +455,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30,
     paddingHorizontal: 20,
     paddingVertical: 30,
+    marginTop: 30,
   },
   text_header: {
     color: "#fff",

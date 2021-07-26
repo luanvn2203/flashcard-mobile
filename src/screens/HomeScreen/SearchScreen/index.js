@@ -88,15 +88,6 @@ function SearchScreen({ navigation }) {
                         if (response) {
                             showToastWithGravityAndOffset(response.message)
                         }
-                        // if (response.status === "Success") {
-                        //     Alert.alert(`${response.message}`, [
-                        //         { text: "Ok" },
-                        //     ]);
-                        // } else {
-                        //     Alert.alert(`${response.message}`, [
-                        //         { text: "Ok" },
-                        //     ]);
-                        // }
                     },
                 },
                 {

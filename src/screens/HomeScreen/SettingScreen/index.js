@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 // import { Text, View, TouchableOpacity, Image, StyleSheet, Button } from 'react-native';
 // import {
 //     Avatar,
@@ -11,13 +11,13 @@ import React from 'react';
 // import { useDispatch, useSelector } from 'react-redux';
 // import Feather from 'react-native-vector-icons/Feather';
 // import { changeLoadingState, saveAccessToken, saveSignedInUser } from '../../../redux/actions/auth';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator } from "@react-navigation/stack";
 
 import SettingScreen from "./SettingScreen";
 import ProfileScreen from "./ProfileScreen";
-import ChangePasswordScreen from './ChangePasswordScreen';
-import ChangeInterestTopicScreen from './ChangeInterestTopicScreen';
-import AchievementScreen from './AchievementScreen';
+import ChangePasswordScreen from "./ChangePasswordScreen";
+import ChangeInterestTopicScreen from "./ChangeInterestTopicScreen";
+import AchievementScreen from "./AchievementScreen";
 
 // function SettingsScreen({ navigation }) {
 //     const { currentUser } = useSelector(state => state.authReducer);
@@ -249,16 +249,37 @@ import AchievementScreen from './AchievementScreen';
 
 // export default SettingsScreen;
 function SettingsScreen({ navigation }) {
-    const SettingScreenStack = createStackNavigator();
-    return (
-        <SettingScreenStack.Navigator screenOptions={{ headerShown: true }} initialRouteName="HomeSettingScreen">
-            <SettingScreenStack.Screen options={{ headerShown: false }} name="HomeSettingScreen" component={SettingScreen} />
-            <SettingScreenStack.Screen name="ProfileScreen" component={ProfileScreen} />
-            <SettingScreenStack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} />
-            <SettingScreenStack.Screen name="ChangeInterestTopicScreen" component={ChangeInterestTopicScreen} />
-            <SettingScreenStack.Screen name="AchievementScreen" component={AchievementScreen} />
-        </SettingScreenStack.Navigator>
-    );
+  const SettingScreenStack = createStackNavigator();
+  return (
+    <SettingScreenStack.Navigator
+      screenOptions={{ headerShown: true }}
+      initialRouteName="HomeSettingScreen"
+    >
+      <SettingScreenStack.Screen
+        options={{ headerShown: false }}
+        name="HomeSettingScreen"
+        component={SettingScreen}
+      />
+      <SettingScreenStack.Screen
+        // options={{ headerShown: false }}
+        name="Profile"
+        component={ProfileScreen}
+      />
+      <SettingScreenStack.Screen
+        options={{ headerShown: false }}
+        name="ChangePasswordScreen"
+        component={ChangePasswordScreen}
+      />
+      <SettingScreenStack.Screen
+        name="ChangeInterestTopicScreen"
+        component={ChangeInterestTopicScreen}
+      />
+      <SettingScreenStack.Screen
+        name="AchievementScreen"
+        component={AchievementScreen}
+      />
+    </SettingScreenStack.Navigator>
+  );
 }
 
 export default SettingsScreen;

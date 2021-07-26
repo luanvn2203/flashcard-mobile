@@ -1,12 +1,22 @@
 import axiosClient from "./axiosClient";
 
-const baseUrl = "http://localhost:9191/request-lession";
+import { baseUrl } from '../../config'
+
 
 const privateLessionAPI = {
-	requestLession: (params) => {
-		const url = baseUrl + "/send";
-		return axiosClient.post(url, { params });
+	// requestLession: (params) => {
+	// 	const url = baseUrl + "/send";
+	// 	return axiosClient.post(url, { params });
+	// },	
+	requestLession: (params, token) => {
+		const url = baseUrl.requestLession + "/send";
+		return axiosClient.post(url, { params }, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
 	},
+
 
 	requestToMe: (params) => {
 		const url = baseUrl + "/to-me";

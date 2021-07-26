@@ -20,14 +20,20 @@ const FlashcardContentScreen = ({ navigation }) => {
     const dispatch = useDispatch();
 
     const getQuestionByFlashcardId = async () => {
+        let isMounted = true
         const response = await questionAPI.getQuestionByFlashcardId({
             flashcardId: flashcardTouched.flashcardId
         }, accessToken)
-        if (response.status === "Success") {
-            setListQuestionFound(response.data)
+        if (isMounted) {
+            if (response.status === "Success") {
+                setListQuestionFound(response.data)
+            } else {
+                setResMessage(response.message)
+            }
         } else {
-            setResMessage(response.message)
+            return isMounted = false
         }
+
     }
     useEffect(() => {
         getQuestionByFlashcardId();

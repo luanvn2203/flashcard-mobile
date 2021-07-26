@@ -25,10 +25,12 @@ const TakeQuizScreen = ({ navigation }) => {
   const { touchedQuiz } = useSelector((state) => state.quizReducer);
   const [listQuestion, setListQuestion] = useState([]);
   const [counter, setCounter] = useState(0);
-  const [optionChecked, setOptionChecked] = useState([]);
-  const [optionChoosed, setOptionChoosed] = useState([]);
+  const [optionChoosed, setOptionChoosed] = useState({
+    questionId: "",
+    options: [{ optionId: "", checked: false }],
+  });
   const [userChoice, setUserChoice] = useState([]);
-  const [isClick, setIsClick] = useState(false);
+  const [isClick, setIsClick] = useState();
   const [isChecked, setIsChecked] = useState(false);
   const [isOptionChecked, setIsOptionChecked] = useState([]);
   const [userDo, setUserDo] = useState([]);
@@ -37,7 +39,7 @@ const TakeQuizScreen = ({ navigation }) => {
   // optionChecked[117] = true;
 
   const dispatch = useDispatch();
-
+  let check = "";
   // const cc = {
   //   questionId: 21,
   //   optionId_choice: [40],
@@ -52,7 +54,7 @@ const TakeQuizScreen = ({ navigation }) => {
       accessToken
     );
     // const pr = JSON.parse(res.testFound);
-    // console.log(res);
+    console.log(res);
     if (res.status === "Success") {
       // setListQuiz(res.testFound);
       setListQuestion(res.listQuestion);
@@ -78,32 +80,6 @@ const TakeQuizScreen = ({ navigation }) => {
     // // } else {
     // //   setIsOptionChecked[counter] = true;
     // // }
-
-    // // isOptionChecked[counter - 1] = true;
-    // // console.log(isOptionChecked);
-
-    // userChoice[counter] = xFactor;
-    // optionChecked[optionChoosed[counter].optionId] = true;
-    // // userChoice.push(xFactor);
-    // console.log(userChoice);
-    // optionChecked[val.optionId] = true;
-    // console.log(optionChecked[val.optionId]);
-    // console.log(optionChecked[val.optionId + 1]);
-    // console.log(val);
-
-    // if (optionChecked[val.optionId] === "undefined") {
-    //   optionChecked[val.optionId] = false;
-    // }
-
-    // console.log(optionChecked[val.optionId]);
-    // // if (optionChecked[val.optionId] === "undefined") {
-    // //   setOptionChecked[val.optionId] = false;
-    // // }
-    // if (optionChecked[val.optionId]) {
-    //   optionChecked[val.optionId] = false;
-    // } else {
-    //   optionChecked[val.optionId] = true;
-    // }
     // // console.log(optionChecked[val.optionId]);
     // console.log(val.optionId);
     const x = {
@@ -120,29 +96,64 @@ const TakeQuizScreen = ({ navigation }) => {
   };
 
   const handleChecked = (val) => {
-    console.log("khong le undefined thiet " + isOptionChecked[val.optionId]);
-    if (isOptionChecked[val.optionId] === "undefined") {
-      isOptionChecked[val.optionId] = false;
-    } else {
-      if (isOptionChecked[val.optionId] === false) {
-        isOptionChecked[val.optionId] = true;
-      } else {
-        isOptionChecked[val.optionId] = false;
+    console.log(check);
+    let options = [];
+    for (let index = 0; index < listQuestion.length; index++) {
+      if (listQuestion[index].questionId === val.questionId) {
+        for (let i = 0; i < listQuestion[index].options.length; i++) {
+          let optionIdObject = {
+            questionId: val.questionId,
+            optionId: listQuestion[index].options[i].optionId,
+            checked: false,
+          };
+
+          options.push(optionIdObject);
+        }
       }
     }
+    for (let u = 0; u < options.length; u++) {
+      if (val.optionId === options[u].optionId) {
+        for (let e = 0; e < optionChoosed.options.length; e++) {
+          if (optionChoosed.options[e].optionId === options[u].optionId) {
+          } else {
+            let a = {
+              optionId: val.optionId,
+              checked: !options[u].checked,
+            };
+            // optionChoosed.options.concat(a);
+            console.log("test");
+            optionChoosed.options.push(a);
+          }
+        }
+      }
+    }
+    setOptionChoosed({
+      questionId: val.questionId,
+      options: [...optionChoosed.options],
+    });
+
+    // console.log("khong le undefined thiet " + isOptionChecked[val.optionId]);
+    // if (isOptionChecked[val.optionId] === "undefined") {
+    //   isOptionChecked[val.optionId] = false;
+    // } else {
+    //   if (isOptionChecked[val.optionId] === false) {
+    //     isOptionChecked[val.optionId] = true;
+    //   } else {
+    //     isOptionChecked[val.optionId] = false;
+    //   }
+    // }
     // if (isOptionChecked[val.optionId] === "undefined" || false) {
     //   isOptionChecked[val.optionId] = true;
     // } else {
     //   isOptionChecked[val.optionId] = false;
     // }
-    console.log(isOptionChecked[val.optionId]);
+    // console.log(isOptionChecked[val.optionId]);
   };
-
+  console.log(optionChoosed.options);
   useEffect(() => {
     getData();
   }, [touchedQuiz]);
 
-  console.log(listQuestion[counter]);
   // // console.log(listQuestion[0]);
 
   // console.log(listQuestion.length);
@@ -169,7 +180,6 @@ const TakeQuizScreen = ({ navigation }) => {
   };
 
   // console.log(resultQuiz);
-
   return (
     <View style={{ flex: 1 }}>
       {/* <Text style={styles.text_header}>Take Quiz Screen</Text> */}
@@ -231,7 +241,16 @@ const TakeQuizScreen = ({ navigation }) => {
                       //     ? false
                       //     : isOptionChecked[value.optionId]
                       // }
-                      checked={isOptionChecked[value.optionId]}
+                      {...optionChoosed.options.map((value) => {
+                        if (value.optionId === value.optionId) {
+                          check = value;
+                        }
+                      })}
+                      checked={
+                        value.optionId === check.optionId
+                          ? check.checked
+                          : false
+                      }
                       onPress={() => handleChecked(value)}
                     />
                   </View>

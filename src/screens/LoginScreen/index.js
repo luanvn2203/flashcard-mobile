@@ -122,9 +122,9 @@ const SignInScreen = ({ navigation }) => {
           expirationTime: response.expirationTime,
         })
       );
-      // const myInfo = await authAPI.getMe(response.tokens);
-      // console.log(myInfo.account);
-      // dispatch(saveSignedInUser(myInfo.account));
+      const myInfo = await authAPI.getMe(response.tokens);
+      console.log(myInfo.account);
+      dispatch(saveSignedInUser(myInfo.account));
 
       // dispatch(changeLoadingState(false))
       navigation.navigate("Home");

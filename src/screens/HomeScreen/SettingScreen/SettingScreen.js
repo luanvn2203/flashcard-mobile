@@ -129,10 +129,10 @@ function SettingScreen({ navigation }) {
 
             <TouchableOpacity
               style={styles.button_css}
-              onPress={() => navigation.navigate("AchievementScreen")}
+              onPress={() => navigation.navigate("Request management")}
             >
               <Feather name="award" color="#fff" size={25} />
-              <Text style={styles.button_text}>Achievement</Text>
+              <Text style={styles.button_text}>Request Management</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

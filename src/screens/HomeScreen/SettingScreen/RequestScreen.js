@@ -1,7 +1,7 @@
 import { WingBlank, Button, WhiteSpace, Modal, Provider } from '@ant-design/react-native';
 import React, { useEffect, useState } from 'react';
 // import { createStackNavigator } from '@react-navigation/stack';
-import { Text, View, TouchableOpacity, Image, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { Text, View, TouchableOpacity, Image, StyleSheet, ScrollView, Pressable, Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import privateLessionAPI from '../../../apis/private.lession.api';
 import privateSubjectAPI from '../../../apis/private.subject.api';
@@ -91,6 +91,59 @@ const RequestScreen = ({ navigation }) => {
         // { text: 'Cancel', onPress: () => console.log('cancel') },
         { text: 'Ok', onPress: () => console.log('ok') },
     ];
+    const confirmApproveSubject = (subRequest) => {
+        Alert.alert("Notice !", "Are you sure to approve this request", [
+            {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+            },
+            {
+                text: "OK",
+                onPress: () => approvedSubjectRequest(subRequest.id),
+            },
+        ]);
+    }
+    const confirmDenineSubject = (subRequest) => {
+        Alert.alert("Notice !", "Are you sure to denine this request", [
+            {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+            },
+            {
+                text: "OK",
+                onPress: () => denineSubjectRequest(subRequest.id),
+            },
+        ]);
+    }
+    const confirmApproveLession = (lesRequest) => {
+        Alert.alert("Notice !", "Are you sure to approve this request", [
+            {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+            },
+            {
+                text: "OK",
+                onPress: () => approvedLessionRequest(lesRequest.id),
+            },
+        ]);
+    }
+    const confirmDenineLession = (lesRequest) => {
+        Alert.alert("Notice !", "Are you sure to denine this request", [
+            {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+            },
+            {
+                text: "OK",
+                onPress: () => denineLessionRequest(lesRequest.id),
+            },
+        ]);
+    }
+
     return (
         <ScrollView style={styles.container} >
             <View style={styles.eachRequestType}>
@@ -110,11 +163,11 @@ const RequestScreen = ({ navigation }) => {
                                             style={{
                                                 backgroundColor: 'rgba(0,139,139,0.5)'
                                             }}
-                                            onPress={() => approvedSubjectRequest(subRequest.id)}
+                                            onPress={() => confirmApproveSubject(subRequest)}
                                             size="small"
                                         >Approve</Button>
                                         <Button
-                                            onPress={() => denineSubjectRequest(subRequest.id)}
+                                            onPress={() => confirmDenineSubject(subRequest)}
                                             size="small"
                                             style={{
                                                 backgroundColor: '#C7C7C7',
@@ -149,11 +202,11 @@ const RequestScreen = ({ navigation }) => {
                                             style={{
                                                 backgroundColor: 'rgba(0,139,139,0.5)'
                                             }}
-                                            onPress={() => approvedLessionRequest(lesRequest.id)}
+                                            onPress={() => confirmApproveLession(lesRequest)}
                                             size="small"
                                         >Approve</Button>
                                         <Button
-                                            onPress={() => denineLessionRequest(lesRequest.id)}
+                                            onPress={() => confirmDenineLession(lesRequest)}
                                             size="small"
                                             style={{
                                                 backgroundColor: '#C7C7C7',

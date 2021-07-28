@@ -10,6 +10,10 @@ import lessionReducer from "../reducers/lession";
 import flashcardReducer from "../reducers/flashcardReducer";
 import quizReducer from "../reducers/quiz";
 import submitQuizReducer from "../reducers/submitQuiz";
+
+
+
+
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,

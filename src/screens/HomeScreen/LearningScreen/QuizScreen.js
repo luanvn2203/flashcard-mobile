@@ -48,7 +48,7 @@ const QuizScreen = ({ navigation }) => {
       },
       {
         text: "OK",
-        onPress: () => navigation.navigate("TakeQuiz"),
+        onPress: () => navigation.navigate("Take Quiz"),
       },
     ]);
   };
@@ -76,8 +76,8 @@ const QuizScreen = ({ navigation }) => {
                 onPress={() => {
                   dispatch(saveQuizIdTouched(item));
                   // console.log(item.lessionId);
-                  navigation.navigate("TakeQuiz");
-                  // createAlertConfirmTakeQuiz();
+                  // navigation.navigate("TakeQuiz");
+                  createAlertConfirmTakeQuiz();
                 }}
                 style={styles.item}
               >

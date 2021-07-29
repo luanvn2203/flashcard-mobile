@@ -11,6 +11,10 @@ import {
   ScrollView,
 } from "react-native";
 import Svg, { G, Circle } from "react-native-svg";
+import submitAPI from "../../../apis/submit.api";
+import { NavigationContext } from "react-navigation";
+// import { saveResultQuiz } from "../../../redux/actions/review";
+import { saveResultQuiz } from "../../../redux/actions/review";
 
 const AnimatedCirCle = Animated.createAnimatedComponent(Circle);
 const AnimatedInput = Animated.createAnimatedComponent(TextInput);
@@ -24,14 +28,37 @@ const ResultQuizScreen = ({
   delay = 0,
   // textColor,
   max = 100,
+  navigation,
 }) => {
   const { resultQuiz } = useSelector((state) => state.submitQuizReducer);
-  console.log(resultQuiz);
+  const { accessToken } = useSelector((state) => state.authReducer);
+  const [result, setResult] = useState({});
+  const [history, setHistory] = useState({});
+  // console.log(resultQuiz);
   const animatedValue = React.useRef(new Animated.Value(0)).current;
 
-  const percentage = (resultQuiz.numOfCorrect / resultQuiz.totalQuestion) * 100;
+  const [percentage, setPercentage] = useState();
 
-  console.log(resultQuiz);
+  const getData = async () => {
+    // console.log(resultQuiz.quizHistoryId);
+    const res = await submitAPI.getHistoryBySubId(
+      {
+        historyId: resultQuiz.quizHistoryId,
+      },
+      accessToken
+    );
+    if (res.status === "Success") {
+      setPercentage(
+        (res.history.numOfCorrect / res.history.numOfQuestion) * 100
+      );
+      setResult(res);
+      setHistory(res.history);
+    }
+  };
+
+  // console.log(resultQuiz);
+  // console.log(history.numOfCorrect);
+  // console.log(history.numOfQuestion);
 
   const animation = (toValue) => {
     return Animated.timing(animatedValue, {
@@ -46,27 +73,32 @@ const ResultQuizScreen = ({
   const circleCircumference = 2 * Math.PI * radius;
   const circleRef = React.useRef();
   const inputRef = React.useRef();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     animation(percentage);
+    getData();
 
     animatedValue.addListener((v) => {
       if (circleRef?.current) {
         const maxPerc = (100 * v.value) / max;
         const strokeDashoffset =
           circleCircumference - (circleCircumference * maxPerc) / 100;
-        circleRef.current.setNativeProps({
-          strokeDashoffset,
-        });
+        circleRef.current.setNativeProps({ strokeDashoffset });
       }
 
       if (inputRef?.current) {
-        inputRef.current.setNativeProps({
-          text:
-            `${Math.round(resultQuiz.numOfCorrect)}` +
-            "/" +
-            `${Math.round(resultQuiz.totalQuestion)}`,
-        });
+        if (
+          history.numOfCorrect !== "undefined" &&
+          history.numOfQuestion !== "undefined"
+        ) {
+          inputRef.current.setNativeProps({
+            text:
+              `${Math.round(history.numOfCorrect)}` +
+              "/" +
+              `${Math.round(history.numOfQuestion)}`,
+          });
+        }
       }
     });
 
@@ -75,14 +107,22 @@ const ResultQuizScreen = ({
     };
   }, [max, percentage, resultQuiz]);
 
+  // console.log(result);
+
+  // console.log(result.history);
+  // console.log(history.totalCore);
+  console.log(history.numOfCorrect);
+  console.log(history.numOfQuestion);
   return (
     <View style={styles.container}>
-      <View style={{ alignItems: "center" }}>
+      <View style={{ alignItems: "center", flex: 1 }}>
         <ScrollView style={styles.scrollview}>
           <View
             style={{ alignItems: "center", marginTop: 20, marginBottom: 30 }}
           >
-            <Text>Your Time: xxxxxx</Text>
+            <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+              Your Time:{" "}
+            </Text>
           </View>
           <View>
             <Svg
@@ -135,11 +175,18 @@ const ResultQuizScreen = ({
           <View
             style={{ alignItems: "center", marginTop: 20, marginBottom: 20 }}
           >
-            <Text>
-              Total core: {parseFloat(resultQuiz.totalCore).toFixed(2)}
-            </Text>
+            {history.totalCore && (
+              <Text>
+                <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                  Total core:{" "}
+                </Text>
+                <Text>
+                  {parseFloat(history.totalCore.toString()).toFixed(2)}
+                </Text>
+              </Text>
+            )}
           </View>
-          <View style={{ width: "100%" }}>
+          <View style={{ width: "100%", flex: 1 }}>
             <TouchableOpacity
               style={[
                 styles.button_ac,
@@ -150,6 +197,10 @@ const ResultQuizScreen = ({
                   width: "100%",
                 },
               ]}
+              onPress={() => {
+                dispatch(saveResultQuiz(result));
+                navigation.navigate("Review Quiz");
+              }}
             >
               <Text>View Answer</Text>
             </TouchableOpacity>
@@ -159,9 +210,10 @@ const ResultQuizScreen = ({
                 {
                   borderColor: "#009387",
                   borderWidth: 1,
-                  marginTop: 20,
+                  marginTop: 15,
                 },
               ]}
+              onPress={() => navigation.navigate("Take Quiz")}
             >
               <Text>Restart Quiz</Text>
             </TouchableOpacity>

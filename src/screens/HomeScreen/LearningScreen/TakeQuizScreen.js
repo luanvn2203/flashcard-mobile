@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
   Button,
+  Alert,
 } from "react-native";
 import { CheckBox } from "react-native-elements";
 import HTML from "react-native-render-html";
@@ -34,7 +35,7 @@ const TakeQuizScreen = ({ navigation }) => {
       },
       accessToken
     );
-    console.log(res);
+    // console.log(res);
     if (res.status === "Success") {
       const listData = res.listQuestion;
       listData.map((question) => {
@@ -59,6 +60,20 @@ const TakeQuizScreen = ({ navigation }) => {
     getData();
   }, [touchedQuiz]);
 
+  // const createAlertConfirmTakeQuiz = () => {
+  //   Alert.alert("Confirm Take This Quiz", "Are you sure to Take This Quiz?", [
+  //     {
+  //       text: "Cancel",
+  //       onPress: () => console.log("Cancel Pressed"),
+  //       style: "cancel",
+  //     },
+  //     {
+  //       text: "OK",
+  //       onPress: () => navigation.navigate("Take Quiz"),
+  //     },
+  //   ]);
+  // };
+
   const handleSubmitQuiz = async () => {
     const response = await submitAPI.submitQuiz(
       {
@@ -68,10 +83,25 @@ const TakeQuizScreen = ({ navigation }) => {
       },
       accessToken
     );
-    console.log(response);
+    // console.log(response);
     if (response.status === "Success") {
       dispatch(saveResultQuiz(response));
-      navigation.navigate("ResultQuiz");
+      Alert.alert(
+        "Confirm Submit This Quiz",
+        "Are you sure to Submit This Quiz?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          {
+            text: "OK",
+            onPress: () => navigation.navigate("Result Quiz"),
+          },
+        ]
+      );
+      // navigation.navigate("ResultQuiz");
     }
   };
 
@@ -79,7 +109,7 @@ const TakeQuizScreen = ({ navigation }) => {
     console.log(optionId, questionId);
     setChecked(!checked);
   };
-  console.log(userChoice);
+  // console.log(userChoice);
 
   const handleSubmit = () => {
     console.log(userChoice);
@@ -108,8 +138,8 @@ const TakeQuizScreen = ({ navigation }) => {
                           (item, index) =>
                             item.questionId === question.questionId
                         );
-                        console.log(isExist);
-                        console.log(question.questionId);
+                        // console.log(isExist);
+                        // console.log(question.questionId);
 
                         if (isExist !== -1) {
                           userChoice[isExist] = {
@@ -122,8 +152,8 @@ const TakeQuizScreen = ({ navigation }) => {
                             optionId_choice: selected,
                           });
                         }
-                        console.log(question.questionId);
-                        console.log(selected);
+                        // console.log(question.questionId);
+                        // console.log(selected);
                       }}
                       iconColor={"#00a2dd"}
                       iconSize={30}
@@ -145,8 +175,27 @@ const TakeQuizScreen = ({ navigation }) => {
           })}
         </View>
       )}
-
-      <Button onPress={handleSubmitQuiz} title={"submit"} />
+      <TouchableOpacity
+        style={{
+          flex: 1,
+          // width: "100%",
+          height: 50,
+          justifyContent: "center",
+          alignItems: "center",
+          borderRadius: 10,
+          backgroundColor: "#009387",
+          // borderColor: "#009387",
+          // borderWidth: 1,
+          marginHorizontal: 10,
+          marginVertical: 10,
+        }}
+        onPress={handleSubmitQuiz}
+      >
+        <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
+          Submit Quiz
+        </Text>
+      </TouchableOpacity>
+      {/* <Button onPress={handleSubmitQuiz} title={"Submit"} /> */}
     </ScrollView>
   );
 };
@@ -163,8 +212,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
     borderRadius: 4,
     minHeight: 80,
+    marginHorizontal: 10,
+    marginVertical: 10,
   },
   questionIndex: {
     fontWeight: "bold",
+    fontSize: 16,
   },
 });

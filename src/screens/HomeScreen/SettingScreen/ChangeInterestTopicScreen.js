@@ -53,7 +53,11 @@ const ChangeInterestTopicScreen = ({ navigation }) => {
 
   const getData = async () => {
     console.log(JSON.parse(currentUser.interestTopic));
-    setInterestTopicThis(JSON.parse(currentUser.interestTopic));
+    const newList = JSON.parse(currentUser.interestTopic).map((elem) =>
+      parseInt(elem, 10)
+    );
+    console.log(newList);
+    setInterestTopicThis(newList);
     const res = await topicAPI.getAllTopic();
     // console.log(res);
     const items = [

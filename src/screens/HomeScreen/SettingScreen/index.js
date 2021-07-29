@@ -17,7 +17,7 @@ import SettingScreen from "./SettingScreen";
 import ProfileScreen from "./ProfileScreen";
 import ChangePasswordScreen from "./ChangePasswordScreen";
 import ChangeInterestTopicScreen from "./ChangeInterestTopicScreen";
-import AchievementScreen from "./AchievementScreen";
+import RequestScreen from "./RequestScreen";
 
 // function SettingsScreen({ navigation }) {
 //     const { currentUser } = useSelector(state => state.authReducer);
@@ -252,7 +252,7 @@ function SettingsScreen({ navigation }) {
   const SettingScreenStack = createStackNavigator();
   return (
     <SettingScreenStack.Navigator
-      screenOptions={{ headerShown: true }}
+      screenOptions={{ headerShown: true, headerStyle: { backgroundColor: 'darkcyan' }, headerTintColor: '#fff' }}
       initialRouteName="HomeSettingScreen"
     >
       <SettingScreenStack.Screen
@@ -275,8 +275,8 @@ function SettingsScreen({ navigation }) {
         component={ChangeInterestTopicScreen}
       />
       <SettingScreenStack.Screen
-        name="AchievementScreen"
-        component={AchievementScreen}
+        name="Request management"
+        component={RequestScreen}
       />
     </SettingScreenStack.Navigator>
   );

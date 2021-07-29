@@ -116,23 +116,23 @@ const LessionScreen = ({ navigation }) => {
           onPress={
             item.statusId === 1
               ? (subject) => {
+                dispatch(saveTouchedLession(item));
+                navigation.navigate("Flashcard");
+              }
+              : async () => {
+                console.log(item);
+                const response = await checkAcceptAPI.checkAcceptLession(
+                  { lessionId: item.lessionId },
+                  accessToken
+                );
+                console.log(response);
+                if (response.status === "Success") {
                   dispatch(saveTouchedLession(item));
                   navigation.navigate("Flashcard");
+                } else if (response.status === "Not Found Request") {
+                  showConfirmDialog(item.lessionId);
                 }
-              : async () => {
-                  console.log(item);
-                  const response = await checkAcceptAPI.checkAcceptLession(
-                    { lessionId: item.lessionId },
-                    accessToken
-                  );
-                  console.log(response);
-                  if (response.status === "Success") {
-                    dispatch(saveTouchedLession(item));
-                    navigation.navigate("Flashcard");
-                  } else if (response.status === "Not Found Request") {
-                    showConfirmDialog(item.lessionId);
-                  }
-                }
+              }
           }
         >
           <Card style={styles.card}>

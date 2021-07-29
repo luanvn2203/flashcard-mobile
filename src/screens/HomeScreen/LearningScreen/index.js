@@ -24,6 +24,7 @@ import FlashcardContentScreen from "./FlashcardContentScreen";
 import QuizScreen from "./QuizScreen";
 import TakeQuizScreen from "./TakeQuizScreen";
 import ResultQuizScreen from "./ResultQuizScreen";
+import ReviewQuizScreen from "./ReviewQuizScreen";
 
 LearningScreen.propTypes = {};
 const DATA = [
@@ -72,16 +73,24 @@ function LearningScreen({ navigation }) {
   const HomeScreenStack = createStackNavigator();
   return (
     <HomeScreenStack.Navigator
-      screenOptions={{ headerShown: true, headerStyle: { backgroundColor: 'darkcyan' }, headerTintColor: '#fff' }}
+      screenOptions={{
+        headerShown: true,
+        headerStyle: { backgroundColor: "darkcyan" },
+        headerTintColor: "#fff",
+      }}
       initialRouteName="InterestScreen"
     >
       <HomeScreenStack.Screen name="Interest" component={InterestScreen} />
       <HomeScreenStack.Screen name="Lession" component={LessionScreen} />
       <HomeScreenStack.Screen name="Flashcard" component={FlashcardScreen} />
-      <HomeScreenStack.Screen name="Flashcard content" component={FlashcardContentScreen} />
+      <HomeScreenStack.Screen
+        name="Flashcard content"
+        component={FlashcardContentScreen}
+      />
       <HomeScreenStack.Screen name="Quiz" component={QuizScreen} />
-      <HomeScreenStack.Screen name="TakeQuiz" component={TakeQuizScreen} />
-      <HomeScreenStack.Screen name="ResultQuiz" component={ResultQuizScreen} />
+      <HomeScreenStack.Screen name="Take Quiz" component={TakeQuizScreen} />
+      <HomeScreenStack.Screen name="Result Quiz" component={ResultQuizScreen} />
+      <HomeScreenStack.Screen name="Review Quiz" component={ReviewQuizScreen} />
     </HomeScreenStack.Navigator>
   );
 }
@@ -108,6 +117,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 30,
     textAlign: "center",
-    borderRadius: 4, padding: 4
+    borderRadius: 4,
+    padding: 4,
   },
 });

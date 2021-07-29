@@ -10,6 +10,7 @@ import lessionReducer from "../reducers/lession";
 import flashcardReducer from "../reducers/flashcardReducer";
 import quizReducer from "../reducers/quiz";
 import submitQuizReducer from "../reducers/submitQuiz";
+import reviewReducer from "../reducers/reviewReducer";
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   flashcardReducer: persistReducer(persistConfig, flashcardReducer),
   quizReducer: persistReducer(persistConfig, quizReducer),
   submitQuizReducer: persistReducer(persistConfig, submitQuizReducer),
+  reviewReducer: persistReducer(persistConfig, reviewReducer),
 });
 
 export const store = createStore(rootReducer, applyMiddleware(thunk));

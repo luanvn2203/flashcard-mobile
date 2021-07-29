@@ -16,6 +16,19 @@ const submitAPI = {
       }
     );
   },
+
+  getHistoryBySubId: (params, token) => {
+    const url = baseUrl.testAPI + "/get-by-id";
+    return axiosClient.post(
+      url,
+      { params },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
 };
 
 export default submitAPI;

@@ -1,6 +1,6 @@
 export const saveResultQuiz = (payload) => {
   return {
-    type: "SAVE_RESULT_QUIZ",
+    type: "SAVE_HISTORY_QUIZ",
     payload: payload,
   };
 };

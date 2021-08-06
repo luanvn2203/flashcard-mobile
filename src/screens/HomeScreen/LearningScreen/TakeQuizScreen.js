@@ -18,6 +18,7 @@ import quizAPI from "../../../apis/quiz.api";
 import submitAPI from "../../../apis/submit.api";
 import { saveResultQuiz } from "../../../redux/actions/submit";
 import CheckboxGroup from "react-native-checkbox-group";
+import { color } from "react-native-reanimated";
 
 const TakeQuizScreen = ({ navigation }) => {
   const { accessToken } = useSelector((state) => state.authReducer);
@@ -25,6 +26,8 @@ const TakeQuizScreen = ({ navigation }) => {
   const [listQuestion, setListQuestion] = useState([]);
   const [checked, setChecked] = useState(false);
   const [userChoice, setUserChoice] = useState([]);
+  const [timeCount, setTimeCount] = useState(0);
+  const [countQuiz, setCountQuiz] = useState(0);
 
   const dispatch = useDispatch();
 
@@ -51,12 +54,21 @@ const TakeQuizScreen = ({ navigation }) => {
         }
         question.options = checkboxes;
       });
+      // console.log(listData);
       setListQuestion(res.listQuestion);
     }
   };
 
   useEffect(() => {
     getData();
+
+    let interval = setInterval(() => {
+      setTimeCount((timeCount) => {
+        return timeCount + 1;
+      });
+    }, 1000); //each count lasts for a second
+    //cleanup the interval on complete
+    return () => clearInterval(interval);
   }, [touchedQuiz]);
 
   // const createAlertConfirmTakeQuiz = () => {
@@ -85,67 +97,141 @@ const TakeQuizScreen = ({ navigation }) => {
     // console.log(response);
     if (response.status === "Success") {
       dispatch(saveResultQuiz(response));
-      Alert.alert(
-        "Confirm Submit This Quiz",
-        "Are you sure to Submit This Quiz?",
-        [
-          {
-            text: "Cancel",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          {
-            text: "OK",
-            onPress: () => navigation.navigate("Result Quiz"),
-          },
-        ]
-      );
-      // navigation.navigate("ResultQuiz");
+      // Alert.alert(
+      //   "Confirm Submit This Quiz",
+      //   "Are you sure to Submit This Quiz?",
+      //   [
+      //     {
+      //       text: "Cancel",
+      //       onPress: () => console.log("Cancel Pressed"),
+      //       style: "cancel",
+      //     },
+      //     {
+      //       text: "OK",
+      //       onPress: () => navigation.navigate("Result Quiz"),
+      //     },
+      //   ]
+      // );
+      navigation.navigate("Result Quiz");
     }
   };
 
+  const handleNextQuiz = (val) => {
+    setCountQuiz(countQuiz + 1);
+  };
+
+  const handlePreQuiz = (val) => {
+    setCountQuiz(countQuiz - 1);
+  };
+
   const handleCheckBoxPress = (optionId, questionId) => {
+    console.log(optionId, questionId);
     setChecked(!checked);
   };
   // console.log(userChoice);
+  // console.log(listQuestion);
 
   const handleSubmit = () => {
+    console.log(userChoice);
   };
+
+  const tagStyle = {
+    p: {
+      color: "white",
+    },
+  };
+
   return (
-    <ScrollView style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+      <View
+        style={{
+          flex: 1,
+          // backgroundColor: "green"
+        }}
+      >
+        <Text style={{ color: "#1E2325" }}>{timeCount}</Text>
+      </View>
       {listQuestion.length > 0 && (
-        <View>
-          {listQuestion.map((question, index) => {
-            return (
-              <View key={index} style={styles.question}>
-                <View>
-                  <Text style={styles.questionIndex}>
-                    Question {index + 1} :
-                  </Text>
+        <View
+          style={{
+            flex: 14,
+            // backgroundColor: "pink",
+          }}
+        >
+          <View style={(styles.question, { flex: 1 })}>
+            <View
+              style={{
+                flex: 1,
+                marginHorizontal: 10,
+                marginVertical: 10,
+                backgroundColor: "#F1F3F4",
+
+                // borderRadius: 15,
+
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+
+                elevation: 5,
+              }}
+            >
+              <View style={{ flex: 5 }}>
+                <Text style={styles.questionIndex}>
+                  Question {countQuiz + 1} :
+                </Text>
+                <ScrollView contentContainerStyle={styles.questionHtml}>
                   <HTML
-                    source={{ html: question.questionContent }}
+                    source={{ html: listQuestion[countQuiz].questionContent }}
                     imagesMaxWidth={Dimensions.get("window").width - 100}
                     contentWidth={Dimensions.get("window").width}
+                    tagsStyles={tagStyle}
                   />
-                  {question.options && (
+                </ScrollView>
+              </View>
+              <View
+                style={{
+                  flex: 5,
+                  backgroundColor: "#fff",
+                  marginHorizontal: 10,
+                  marginVertical: 15,
+                  borderRadius: 12,
+
+                  shadowColor: "#000",
+                  shadowOffset: {
+                    width: 0,
+                    height: 2,
+                  },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 3.84,
+
+                  elevation: 5,
+                }}
+              >
+                <ScrollView>
+                  {listQuestion[countQuiz].options && (
                     <CheckboxGroup
-                      key={question.questionId}
+                      key={listQuestion[countQuiz].questionId}
                       callback={(selected) => {
                         let isExist = userChoice.findIndex(
                           (item, index) =>
-                            item.questionId === question.questionId
+                            item.questionId ===
+                            listQuestion[countQuiz].questionId
                         );
                         // console.log(isExist);
                         // console.log(question.questionId);
 
                         if (isExist !== -1) {
                           userChoice[isExist] = {
-                            questionId: question.questionId,
+                            questionId: listQuestion[countQuiz].questionId,
                             optionId_choice: selected,
                           };
                         } else {
                           userChoice.push({
-                            questionId: question.questionId,
+                            questionId: listQuestion[countQuiz].questionId,
                             optionId_choice: selected,
                           });
                         }
@@ -153,47 +239,99 @@ const TakeQuizScreen = ({ navigation }) => {
                         // console.log(selected);
                       }}
                       iconColor={"#00a2dd"}
-                      iconSize={30}
+                      iconSize={25}
                       checkedIcon="ios-checkbox-outline"
                       uncheckedIcon="ios-square-outline"
-                      checkboxes={question.options}
+                      checkboxes={listQuestion[countQuiz].options}
                       labelStyle={{
                         color: "#333",
+                        marginHorizontal: 10,
                       }}
                       rowStyle={{
                         flexDirection: "row",
+                        marginVertical: 10,
+                        marginLeft: 5,
                       }}
                       rowDirection={"column"}
                     />
                   )}
-                </View>
+                </ScrollView>
               </View>
-            );
-          })}
+            </View>
+          </View>
+          {/* {listQuestion.map((question, index) => { */}
+          {/* return  ()); */}
+          {/* })} */}
         </View>
       )}
-      <TouchableOpacity
+      <View
         style={{
-          flex: 1,
-          // width: "100%",
-          height: 50,
+          flex: 3,
+          flexDirection: "row",
           justifyContent: "center",
           alignItems: "center",
-          borderRadius: 10,
-          backgroundColor: "#009387",
-          // borderColor: "#009387",
-          // borderWidth: 1,
-          marginHorizontal: 10,
-          marginVertical: 10,
         }}
-        onPress={handleSubmitQuiz}
       >
-        <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
-          Submit Quiz
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            flex: 2,
+            // width: "100%",
+            height: 50,
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 10,
+            backgroundColor: "#107895",
+            // borderColor: "#009387",
+            // borderWidth: 1,
+            marginHorizontal: 10,
+            marginVertical: 10,
+          }}
+          onPress={handlePreQuiz}
+        >
+          <Feather name="chevron-left" size={20} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            flex: 6,
+            // width: "100%",
+            height: 50,
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 10,
+            backgroundColor: "#107895",
+            // borderColor: "#009387",
+            // borderWidth: 1,
+            marginHorizontal: 10,
+            marginVertical: 10,
+          }}
+          onPress={handleSubmitQuiz}
+        >
+          <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
+            Submit Quiz
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={{
+            flex: 2,
+            // width: "100%",
+            height: 50,
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 10,
+            backgroundColor: "#107895",
+            // borderColor: "#009387",
+            // borderWidth: 1,
+            marginHorizontal: 10,
+            marginVertical: 10,
+          }}
+          onPress={handleNextQuiz}
+        >
+          <Feather name="chevron-right" size={20} color="#fff" />
+        </TouchableOpacity>
+      </View>
       {/* <Button onPress={handleSubmitQuiz} title={"Submit"} /> */}
-    </ScrollView>
+    </View>
   );
 };
 
@@ -202,10 +340,10 @@ export default TakeQuizScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgb(0,139,139)",
+    // backgroundColor: "rgb(0,139,139)",
   },
   question: {
-    backgroundColor: "rgba(255,255,255,0.5)",
+    // backgroundColor: "rgba(255,255,255,0.5)",
     marginTop: 5,
     borderRadius: 4,
     minHeight: 80,
@@ -215,5 +353,14 @@ const styles = StyleSheet.create({
   questionIndex: {
     fontWeight: "bold",
     fontSize: 16,
+    color: "#1E2325",
+    marginTop: 10,
+    marginLeft: 10,
+  },
+  questionHtml: {
+    fontWeight: "bold",
+    marginHorizontal: 10,
+    marginVertical: 10,
+    fontSize: 50,
   },
 });

@@ -4,10 +4,10 @@ const initialState = {
 
 function reviewReducer(state = initialState, action) {
   switch (action.type) {
-    case "SAVE_RESULT_QUIZ":
+    case "SAVE_HISTORY_QUIZ":
       return {
         ...state,
-        resultQuiz: action.payload,
+        historyQuiz: action.payload,
       };
     default:
       return state;

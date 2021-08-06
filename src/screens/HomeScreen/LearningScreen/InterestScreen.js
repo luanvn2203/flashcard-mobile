@@ -69,7 +69,7 @@ const InterestScreen = ({ navigation }) => {
                       //   style={(marginVertical = 50)}
                       onPress={(item) => {
                         dispatch(saveSubjectIdTouched(subject));
-                        console.log(subject);
+                        // console.log(subject);
                         navigation.navigate("Lession");
                       }}
                     >

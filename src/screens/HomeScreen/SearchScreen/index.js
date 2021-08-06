@@ -75,18 +75,29 @@ function SearchScreen({ navigation }) {
         //set state
     }
 
-    const showConfirmDialog = (subjectId) => {
+    const showConfirmDialog = (subjectId, title, content, subjectOrLession, item) => {
         return Alert.alert(
-            "This subject is private by author !",
-            "Do you want to use 10 point to request for seeing this subject content ?",
+            title,
+            content,
             [
                 {
                     text: "Yes",
                     onPress: async () => {
-                        // send request subject
-                        const response = await privateSubjectAPI.requestSubject({ subjectId: subjectId }, accessToken)
-                        if (response) {
-                            showToastWithGravityAndOffset(response.message)
+                        if (subjectOrLession === true) {
+                            const response = await subjectAPI.savePublicRelation({ subjectId: subjectId }, accessToken)
+                            if (response.status === "Success") {
+                                showToastWithGravityAndOffset(response.message)
+                                dispatch(saveSubjectIdTouched(item))
+                                navigation.navigate("Lession")
+                            } else {
+                                showToastWithGravityAndOffset(response.message)
+                            }
+                        } else {
+                            // send request subject
+                            const response = await privateSubjectAPI.requestSubject({ subjectId: subjectId }, accessToken)
+                            if (response) {
+                                showToastWithGravityAndOffset(response.message)
+                            }
                         }
                     },
                 },
@@ -97,24 +108,29 @@ function SearchScreen({ navigation }) {
         );
     };
 
+
     const renderItem = ({ item }) => {
         return (
-
             <View style={styles.itemResult}>
-
                 <TouchableOpacity
-                    onPress={item.statusId === 1 ? (subject) => {
-                        dispatch(saveSubjectIdTouched(item))
-                        navigation.navigate("Lession")
-                    } : async () => {
+                    onPress={item.statusId === 1 ? async (subject) => {
                         console.log(item)
+                        const response = await subjectAPI.checkAccessPublicSubject({ subjectId: item.subjectId }, accessToken)
+                        console.log(response)
+                        if (response.status === "Success") {
+                            dispatch(saveSubjectIdTouched(item))
+                            navigation.navigate("Lession")
+                        } else {
+                            showConfirmDialog(item.subjectId, "Notice!", "Do you want to use 3 point to view this subject content ?", true, item)
+                        }
+                    } : async () => {
                         const response = await checkAcceptAPI.checkAcceptSubject({ subjectId: item.subjectId }, accessToken)
                         console.log(response)
                         if (response.status === "Success") {
                             dispatch(saveSubjectIdTouched(item))
                             navigation.navigate("Lession")
                         } else if (response.status === "Not Found Request") {
-                            showConfirmDialog(item.subjectId)
+                            showConfirmDialog(item.subjectId, "This subject is private by author !", "Do you want to use 10 point to request for seeing this subject content ?", false)
                         }
                     }}
                 >

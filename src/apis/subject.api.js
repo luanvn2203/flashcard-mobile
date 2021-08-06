@@ -106,6 +106,39 @@ const subjectAPI = {
       }
     );
   },
+
+  checkAccessPublicSubject: (params, token) => {
+    const url = baseUrl.subjectBase + "/check-public-access";
+    return axiosClient.post(
+      url,
+      { params },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
+
+
+  savePublicRelation: (params, token) => {
+    const url = baseUrl.subjectBase + "/save-relation";
+    return axiosClient.post(
+      url,
+      { params },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
+
+
+
 };
+
+
+
 
 export default subjectAPI;

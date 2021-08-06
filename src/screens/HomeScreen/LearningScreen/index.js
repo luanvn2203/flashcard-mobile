@@ -74,7 +74,7 @@ function LearningScreen({ navigation }) {
   return (
     <HomeScreenStack.Navigator
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
         headerStyle: { backgroundColor: "darkcyan" },
         headerTintColor: "#fff",
       }}

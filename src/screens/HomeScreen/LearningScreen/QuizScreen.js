@@ -15,13 +15,17 @@ import {
   Button,
   FlatList,
   Alert,
+  Modal,
+  Pressable,
 } from "react-native";
 import { saveQuizIdTouched } from "../../../redux/actions/quiz";
+import Moment from "moment";
 
 const QuizScreen = ({ navigation }) => {
   const { accessToken } = useSelector((state) => state.authReducer);
   const { touchedSubject } = useSelector((state) => state.subjectReducer);
   const [listQuiz, setListQuiz] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const getData = async () => {
     // console.log(JSON.parse(currentUser.interestTopic));
@@ -33,7 +37,7 @@ const QuizScreen = ({ navigation }) => {
     );
     // console.log(res);
     // const pr = JSON.parse(res.testFound);
-    console.log(res);
+    // console.log(res);
     if (res.status === "Success") {
       setListQuiz(res.testFound);
     }
@@ -51,6 +55,61 @@ const QuizScreen = ({ navigation }) => {
         onPress: () => navigation.navigate("Take Quiz"),
       },
     ]);
+    // navigation.navigate("Take Quiz");
+  };
+
+  const renderModal = (val) => {
+    return (
+      <View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <View style={{ alignItems: "flex-start" }}>
+                <Text style={styles.modalText}>Author: {val.author}</Text>
+                <Text style={styles.modalText}>
+                  Date of create: {Moment(val.createDate).format("YYYY-MM-DD")}
+                </Text>
+                <Text style={styles.modalText}>
+                  Total question: {val.total_question}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Pressable
+                  style={[
+                    styles.button,
+                    styles.buttonClose,
+                    { marginRight: 15 },
+                  ]}
+                  onPress={() => setModalVisible(!modalVisible)}
+                >
+                  <Text style={styles.textStyle}>Cancel</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => createAlertConfirmTakeQuiz()}
+                >
+                  <Text style={styles.textStyle}>Take Quiz</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    );
   };
 
   const dispatch = useDispatch();
@@ -59,13 +118,13 @@ const QuizScreen = ({ navigation }) => {
     getData();
   }, [touchedSubject]);
 
-  // console.log(listQuiz);
+  console.log(listQuiz);
   // console.log(touchedSubject.subjectId);
 
   return (
     <View style={styles.container}>
       {/* <Text style={styles.text_header}>Quiz Screen</Text> */}
-      {listQuiz && (
+      {listQuiz.length > 0 ? (
         <View>
           <FlatList
             keyExtractor={(item) => item.id.toString()}
@@ -76,11 +135,14 @@ const QuizScreen = ({ navigation }) => {
                 onPress={() => {
                   dispatch(saveQuizIdTouched(item));
                   // console.log(item.lessionId);
-                  // navigation.navigate("TakeQuiz");
-                  createAlertConfirmTakeQuiz();
+                  navigation.navigate("Take Quiz");
+                  // createAlertConfirmTakeQuiz();
+
+                  // setModalVisible(true);
                 }}
                 style={styles.item}
               >
+                {/* <View>{renderModal(item)}</View> */}
                 <View style={styles.startSide}>
                   <Text style={styles.textItemName}>{item.testName}</Text>
                   {/* <Text style={styles.textItemDescription}>
@@ -94,6 +156,10 @@ const QuizScreen = ({ navigation }) => {
             )}
           />
         </View>
+      ) : (
+        <View>
+          <Text>Nothing here</Text>
+        </View>
       )}
     </View>
   );
@@ -105,14 +171,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingTop: 40,
-    paddingHorizontal: 20,
+    // paddingTop: 40,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   item: {
-    marginTop: 24,
+    // marginTop: 24,
+    marginTop: 10,
     padding: 30,
     backgroundColor: "#009387",
     flexDirection: "row",
+    marginBottom: 10,
   },
   textItemName: {
     color: "#fff",
@@ -137,5 +206,43 @@ const styles = StyleSheet.create({
   },
   startSide: {
     flex: 1,
+  },
+  /////////////
+  modalView: {
+    marginHorizontal: 10,
+    marginTop: "50%",
+    // margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
   },
 });

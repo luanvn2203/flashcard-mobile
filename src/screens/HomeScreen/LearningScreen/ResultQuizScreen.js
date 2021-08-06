@@ -33,32 +33,33 @@ const ResultQuizScreen = ({
   const { resultQuiz } = useSelector((state) => state.submitQuizReducer);
   const { accessToken } = useSelector((state) => state.authReducer);
   const [result, setResult] = useState({});
-  const [history, setHistory] = useState({});
-  // console.log(resultQuiz);
+  const [dispatchResult, setDispatchResult] = useState({});
+  const [history, setHistory] = useState({
+    numOfCorrect: 0,
+    numOfQuestion: 0,
+  });
+  console.log(resultQuiz);
   const animatedValue = React.useRef(new Animated.Value(0)).current;
 
   const [percentage, setPercentage] = useState();
 
   const getData = async () => {
-    // console.log(resultQuiz.quizHistoryId);
     const res = await submitAPI.getHistoryBySubId(
       {
-        historyId: resultQuiz.quizHistoryId,
+        historyId: resultQuiz.result.quizHistoryId,
       },
       accessToken
     );
+    console.log(res);
     if (res.status === "Success") {
       setPercentage(
         (res.history.numOfCorrect / res.history.numOfQuestion) * 100
       );
-      setResult(res);
+      setResult(res.result);
+      setDispatchResult(res);
       setHistory(res.history);
     }
   };
-
-  // console.log(resultQuiz);
-  // console.log(history.numOfCorrect);
-  // console.log(history.numOfQuestion);
 
   const animation = (toValue) => {
     return Animated.timing(animatedValue, {
@@ -79,40 +80,29 @@ const ResultQuizScreen = ({
     animation(percentage);
     getData();
 
-    animatedValue.addListener((v) => {
-      if (circleRef?.current) {
-        const maxPerc = (100 * v.value) / max;
-        const strokeDashoffset =
-          circleCircumference - (circleCircumference * maxPerc) / 100;
-        circleRef.current.setNativeProps({ strokeDashoffset });
-      }
-
-      if (inputRef?.current) {
-        if (
-          history.numOfCorrect !== "undefined" &&
-          history.numOfQuestion !== "undefined"
-        ) {
-          inputRef.current.setNativeProps({
-            text:
-              `${Math.round(history.numOfCorrect)}` +
-              "/" +
-              `${Math.round(history.numOfQuestion)}`,
-          });
-        }
-      }
-    });
-
     return () => {
       animatedValue.removeAllListeners();
     };
-  }, [max, percentage, resultQuiz]);
+  }, []);
+  animatedValue.addListener((v) => {
+    if (circleRef?.current) {
+      const maxPerc = (100 * v.value) / max;
+      const strokeDashoffset =
+        circleCircumference - (circleCircumference * maxPerc) / 100;
+      circleRef.current.setNativeProps({ strokeDashoffset });
+    }
 
-  // console.log(result);
-
-  // console.log(result.history);
-  // console.log(history.totalCore);
-  console.log(history.numOfCorrect);
-  console.log(history.numOfQuestion);
+    if (inputRef?.current) {
+      if (history.numOfCorrect && history.numOfQuestion) {
+        inputRef.current.setNativeProps({
+          text:
+            `${Math.round(history.numOfCorrect)}` +
+            "/" +
+            `${Math.round(history.numOfQuestion)}`,
+        });
+      }
+    }
+  });
   return (
     <View style={styles.container}>
       <View style={{ alignItems: "center", flex: 1 }}>
@@ -175,14 +165,17 @@ const ResultQuizScreen = ({
           <View
             style={{ alignItems: "center", marginTop: 20, marginBottom: 20 }}
           >
-            {history.totalCore && (
+            {history && (
               <Text>
                 <Text style={{ fontSize: 16, fontWeight: "bold" }}>
                   Total core:{" "}
                 </Text>
-                <Text>
-                  {parseFloat(history.totalCore.toString()).toFixed(2)}
-                </Text>
+                {history.totalCore && (
+                  <Text>
+                    {parseFloat(history.totalCore.toString()).toFixed(2)}
+                    {/* {history.totalCore} */}
+                  </Text>
+                )}
               </Text>
             )}
           </View>
@@ -198,7 +191,7 @@ const ResultQuizScreen = ({
                 },
               ]}
               onPress={() => {
-                dispatch(saveResultQuiz(result));
+                dispatch(saveResultQuiz(dispatchResult));
                 navigation.navigate("Review Quiz");
               }}
             >
@@ -228,6 +221,7 @@ export default ResultQuizScreen;
 
 const styles = StyleSheet.create({
   container: {
+    width: "100%",
     flex: 1,
     alignItems: "center",
     justifyContent: "center",

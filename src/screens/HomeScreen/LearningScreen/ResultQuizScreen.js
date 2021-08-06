@@ -33,7 +33,10 @@ const ResultQuizScreen = ({
   const { resultQuiz } = useSelector((state) => state.submitQuizReducer);
   const { accessToken } = useSelector((state) => state.authReducer);
   const [result, setResult] = useState({});
-  const [history, setHistory] = useState({});
+  const [history, setHistory] = useState({
+    numOfCorrect: 0,
+    numOfQuestion: 0
+  });
   // console.log(resultQuiz);
   const animatedValue = React.useRef(new Animated.Value(0)).current;
 
@@ -41,6 +44,7 @@ const ResultQuizScreen = ({
 
   const getData = async () => {
     // console.log(resultQuiz.quizHistoryId);
+    console.log(history)
     const res = await submitAPI.getHistoryBySubId(
       {
         historyId: resultQuiz.quizHistoryId,
@@ -79,40 +83,34 @@ const ResultQuizScreen = ({
     animation(percentage);
     getData();
 
-    animatedValue.addListener((v) => {
-      if (circleRef?.current) {
-        const maxPerc = (100 * v.value) / max;
-        const strokeDashoffset =
-          circleCircumference - (circleCircumference * maxPerc) / 100;
-        circleRef.current.setNativeProps({ strokeDashoffset });
-      }
 
-      if (inputRef?.current) {
-        if (
-          history.numOfCorrect !== "undefined" &&
-          history.numOfQuestion !== "undefined"
-        ) {
-          inputRef.current.setNativeProps({
-            text:
-              `${Math.round(history.numOfCorrect)}` +
-              "/" +
-              `${Math.round(history.numOfQuestion)}`,
-          });
-        }
-      }
-    });
 
     return () => {
       animatedValue.removeAllListeners();
     };
-  }, [max, percentage, resultQuiz]);
+  }, []);
+  animatedValue.addListener((v) => {
+    if (circleRef?.current) {
+      const maxPerc = (100 * v.value) / max;
+      const strokeDashoffset =
+        circleCircumference - (circleCircumference * maxPerc) / 100;
+      circleRef.current.setNativeProps({ strokeDashoffset });
+    }
 
-  // console.log(result);
-
-  // console.log(result.history);
-  // console.log(history.totalCore);
-  console.log(history.numOfCorrect);
-  console.log(history.numOfQuestion);
+    if (inputRef?.current) {
+      if (
+        history.numOfCorrect !== "undefined" &&
+        history.numOfQuestion !== "undefined"
+      ) {
+        inputRef.current.setNativeProps({
+          text:
+            `${Math.round(history.numOfCorrect)}` +
+            "/" +
+            `${Math.round(history.numOfQuestion)}`,
+        });
+      }
+    }
+  });
   return (
     <View style={styles.container}>
       <View style={{ alignItems: "center", flex: 1 }}>

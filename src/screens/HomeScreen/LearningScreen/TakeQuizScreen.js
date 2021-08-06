@@ -51,7 +51,6 @@ const TakeQuizScreen = ({ navigation }) => {
         }
         question.options = checkboxes;
       });
-      console.log(listData);
       setListQuestion(res.listQuestion);
     }
   };
@@ -106,13 +105,11 @@ const TakeQuizScreen = ({ navigation }) => {
   };
 
   const handleCheckBoxPress = (optionId, questionId) => {
-    console.log(optionId, questionId);
     setChecked(!checked);
   };
   // console.log(userChoice);
 
   const handleSubmit = () => {
-    console.log(userChoice);
   };
   return (
     <ScrollView style={{ flex: 1 }}>

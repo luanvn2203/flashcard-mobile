@@ -9,6 +9,11 @@ function submitQuizReducer(state = initialState, action) {
         ...state,
         resultQuiz: action.payload,
       };
+    case "ALL_QUIZ_HISTORY_BY_ME":
+      return {
+        ...state,
+        allQuizHistory: action.payload,
+      };
     default:
       return state;
   }

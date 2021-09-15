@@ -29,6 +29,15 @@ const submitAPI = {
       }
     );
   },
+
+  getAllHistoryByMe: (token) => {
+    const url = baseUrl.testAPI + "/get-by-me";
+    return axiosClient.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
 };
 
 export default submitAPI;

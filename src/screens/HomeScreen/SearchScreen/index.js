@@ -27,6 +27,7 @@ import subjectAPI from '../../../apis/subject.api';
 import { saveSubjectIdTouched } from '../../../redux/actions/subject';
 import checkAcceptAPI from '../../../apis/check.accessibility';
 import privateSubjectAPI from '../../../apis/private.subject.api';
+import authAPI from '../../../apis/auth.api';
 
 
 function SearchScreen({ navigation }) {
@@ -67,8 +68,10 @@ function SearchScreen({ navigation }) {
     });
     const debounceDropDown = useCallback(debounce((nextValue) => searchSubject(nextValue), 1000), [])
     const textInputChange = (val) => {
+
         if (val.trim().length >= 4) {
             debounceDropDown(val)
+            setSearchValue(val)
         }
     }
     const handleValidValue = (val) => {
@@ -96,16 +99,53 @@ function SearchScreen({ navigation }) {
             ]
         );
     };
-
+    const checkPublicAccessSubject = async (subjectId) => {
+        try {
+            const response = await subjectAPI.checkPublic({ subjectId: subjectId }, accessToken)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    const showConfirmDialogPublic = (subjectId, showMessage) => {
+        return Alert.alert(
+            "You have not join this subject before!",
+            showMessage,
+            [
+                {
+                    text: "Yes",
+                    onPress: async () => {
+                        // send request subject
+                        const response = await subjectAPI.saveRelation({ subjectId: subjectId }, accessToken)
+                        if (response.status === "Success") {
+                            showToastWithGravityAndOffset("Join subject successfully, you can learning now")
+                            searchSubject(searchValue)
+                            const myInfo = await authAPI.getMe(accessToken);
+                            dispatch(saveSignedInUser(myInfo.account));
+                        } else {
+                            showToastWithGravityAndOffset(response.message)
+                        }
+                    },
+                },
+                {
+                    text: "No",
+                },
+            ]
+        );
+    };
     const renderItem = ({ item }) => {
         return (
-
             <View style={styles.itemResult}>
-
                 <TouchableOpacity
-                    onPress={item.statusId === 1 ? (subject) => {
-                        dispatch(saveSubjectIdTouched(item))
-                        navigation.navigate("Lession")
+                    onPress={item.statusId === 1 ? async () => {
+                        const response = await checkPublicAccessSubject(item.subjectId)
+                        if (response.status === 'Success') {
+                            dispatch(saveSubjectIdTouched(item))
+                            navigation.navigate("Lession")
+                        } else {
+                            showConfirmDialogPublic(item.subjectId, response.message)
+                        }
+
                     } : async () => {
                         console.log(item)
                         const response = await checkAcceptAPI.checkAcceptSubject({ subjectId: item.subjectId }, accessToken)
@@ -118,23 +158,30 @@ function SearchScreen({ navigation }) {
                         }
                     }}
                 >
-                    <Card style={styles.card} >
+                    <Card style={styles.card}>
                         <Card.Header
-                            title={item.subjectName}
+                            title={<Text style={styles.subjectName}>{item.subjectName}</Text>}
                             thumbStyle={{ width: 30, height: 30 }}
                             // thumb="https://gw.alipayobjects.com/zos/rmsportal/MRhHctKOineMbKAZslML.jpg"
-                            extra={<Text style={styles.author}>{'Subject'}</Text>}
+                            extra={<Text style={styles.joinStatus} > <Ionicons name='play-forward-circle' />
+                                Status:<Text style={item.joinStatus === 'Join' ? styles.greenStatus : styles.blackStatus}> {item.joinStatus}</Text> </Text>}
                         />
                         <Card.Body>
                             <View style={{ minHeight: 20 }}>
-                                <Text style={{ marginLeft: 16 }}>{item.subjectDescription}</Text>
-                                <Text style={{ marginLeft: 16, color: 'blue' }}>{item.author}</Text>
-
+                                <Text style={{ marginLeft: 16 }}>
+                                    {item.subjectDescription}
+                                </Text>
+                                <Text style={{ marginLeft: 16, color: "black", marginTop: 10 }}>
+                                    <Ionicons name='person' /> {item.author}
+                                </Text>
+                                <Text style={{ marginLeft: 16, color: "black" }}>
+                                    <Ionicons name='mail' /> {item.accountId}
+                                </Text>
                             </View>
                         </Card.Body>
                         <Card.Footer
-                            content={item.statusId == 1 ? "Public" : <Text style={styles.privateContent}>Private</Text>}
-
+                            content={<Text style={{ fontWeight: 'bold', marginLeft: 2 }}><Ionicons name='open' /> Point: {item.point_require}</Text>}
+                            extra={<Text style={styles.footerExtra}>  <Ionicons name='paper-plane' /> Learn now</Text>}
                         />
                     </Card>
                 </TouchableOpacity>
@@ -142,7 +189,7 @@ function SearchScreen({ navigation }) {
         )
     }
     return (
-        <View style={{ height: '100%', backgroundColor: '#169d9e' }}>
+        <View style={{ height: '100%', backgroundColor: '#c3c3c3' }}>
             <StatusBar backgroundColor='#009387' barStyle="light-content" />
             <View style={styles.action}>
                 <FontAwesome
@@ -155,7 +202,7 @@ function SearchScreen({ navigation }) {
 
                     keyboardType="email-address"
                     autoCompleteType="email"
-                    placeholder="Input search value . . . "
+                    placeholder="What are you looking for? "
                     placeholderTextColor="#666666"
                     style={[styles.textInput, {
                         color: '#000000'
@@ -167,11 +214,12 @@ function SearchScreen({ navigation }) {
 
             </View>
             <View style={{ marginTop: 10 }}>
-                {searchResult !== null && <FlatList
-                    data={searchResult.result}
-                    renderItem={renderItem}
-                    keyExtractor={(item, index) => index.toString()}
-                />}
+                {searchResult !== null &&
+                    <FlatList
+                        data={searchResult.result}
+                        renderItem={renderItem}
+                        keyExtractor={(item, index) => index.toString()}
+                    />}
                 {searchResult === null && searchValue !== null && <Text style={styles.notFoundSubject}>Not found subject with keyword:  {searchValue}</Text>}
                 {searchResult === null && searchValue === null && <View style={styles.placeholderSearch}>
                     <Text style={styles.placeholderSearchText} >Type some text to search subject . . .</Text>
@@ -190,29 +238,8 @@ export default SearchScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#009387'
+        backgroundColor: '#c3c3c3'
 
-    },
-    item: {
-        backgroundColor: 'rgba(112,193,248,0.2)',
-        marginVertical: 8,
-        marginHorizontal: 16,
-        borderRadius: 18
-    },
-    title: {
-        fontSize: 32,
-    },
-    card: {
-        marginTop: 10
-    },
-    subjectTitle: {
-        color: '#fff',
-        fontSize: 30,
-        textAlign: 'center',
-        borderRadius: 4, padding: 4
-    },
-    author: {
-        marginLeft: '50%'
     },
     action: {
         flexDirection: "row",
@@ -247,6 +274,45 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#fff',
         fontSize: 19,
+    },
+    subjectName: {
+        fontWeight: 'bold',
+        fontSize: 15
+    },
+    joinStatus: {
+        marginLeft: 40
+    },
+    subjectName: {
+        fontWeight: 'bold',
+        fontSize: 15
+    },
+    touchSubject: {
+        margin: 4,
+        borderTopColor: '#a4acba',
+        borderBottomColor: '#fff',
+        borderLeftColor: '#a4acba',
+        borderRightColor: '#fff',
+        borderWidth: 2,
+        borderRadius: 7,
+        paddingLeft: 1
+    },
+    footerExtra: {
+        marginLeft: 40,
+        fontWeight: 'bold'
+    },
+    greenStatus: {
+        color: 'green',
+        fontWeight: 'bold',
+        backgroundColor: "rgba(228,236,250,0.7)",
+        fontSize: 15
+    },
+    blackStatus: {
+        color: 'black',
+        fontWeight: 'bold', backgroundColor: "rgba(228,236,250,0.7)",
+        fontSize: 15
+    },
+    card: {
+        marginTop: 3
     }
 
 

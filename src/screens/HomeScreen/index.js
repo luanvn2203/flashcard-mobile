@@ -81,6 +81,7 @@ const HomeScreen = ({ navigation }) => {
   // console.log(currentUser)
   return (
     <Tab.Navigator
+      screenOptions={{ headerShown: false }}
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           if (route.name === "Learning") {
@@ -137,7 +138,7 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#3b4c9b",
+    backgroundColor: "#ebe9ea",
   },
   header: {
     flex: 1,

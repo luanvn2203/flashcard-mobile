@@ -215,9 +215,9 @@ const ProfileScreen = ({ navigation }) => {
                   autoCapitalize="none"
                   value={data.email}
                   editable={false}
-                  // disable="true"
-                  //   onChangeText={(val) => handleEmailChange(val)}
-                  // onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
+                // disable="true"
+                //   onChangeText={(val) => handleEmailChange(val)}
+                // onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
                 />
                 {/* {data.check_handleEmailChange ?
                                 <Animatable.View
@@ -332,7 +332,7 @@ const ProfileScreen = ({ navigation }) => {
                     autoCapitalize="none"
                     value={Moment(oldDOB).format("YYYY-MM-DD")}
                     editable={false}
-                    // onChangeText={(val) => handleAddressChange(val)}
+                  // onChangeText={(val) => handleAddressChange(val)}
                   />
                 </View>
                 <View>

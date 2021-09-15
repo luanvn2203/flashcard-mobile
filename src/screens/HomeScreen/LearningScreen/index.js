@@ -75,8 +75,10 @@ function LearningScreen({ navigation }) {
     <HomeScreenStack.Navigator
       screenOptions={{
         headerShown: true,
-        headerStyle: { backgroundColor: "darkcyan" },
-        headerTintColor: "#fff",
+        headerStyle: { backgroundColor: "#fff" },
+        headerTintColor: "#000",
+        headerTitleStyle: {
+        },
       }}
       initialRouteName="InterestScreen"
     >

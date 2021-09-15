@@ -35,7 +35,7 @@ const ReviewQuizScreen = ({}) => {
         ) {
           return (
             <View>
-              <Feather name="check" color="#fff" size={20} />
+              <Feather name="check" color="#009387" size={20} />
             </View>
           );
         } else if (

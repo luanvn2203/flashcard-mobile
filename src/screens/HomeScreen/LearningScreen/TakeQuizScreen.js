@@ -135,26 +135,26 @@ const TakeQuizScreen = ({ navigation }) => {
     console.log(userChoice);
   };
 
-  const tagStyle = {
-    p: {
-      color: "white",
-    },
-  };
+  // const tagStyle = {
+  //   p: {
+  //     color: "#fff",
+  //   },
+  // };
 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
-      <View
+      {/* <View
         style={{
           flex: 1,
           // backgroundColor: "green"
         }}
       >
         <Text style={{ color: "#1E2325" }}>{timeCount}</Text>
-      </View>
+      </View> */}
       {listQuestion.length > 0 && (
         <View
           style={{
-            flex: 14,
+            flex: 15,
             // backgroundColor: "pink",
           }}
         >
@@ -188,7 +188,7 @@ const TakeQuizScreen = ({ navigation }) => {
                     source={{ html: listQuestion[countQuiz].questionContent }}
                     imagesMaxWidth={Dimensions.get("window").width - 100}
                     contentWidth={Dimensions.get("window").width}
-                    tagsStyles={tagStyle}
+                    // tagsStyles={tagStyle}
                   />
                 </ScrollView>
               </View>
@@ -249,7 +249,7 @@ const TakeQuizScreen = ({ navigation }) => {
                       }}
                       rowStyle={{
                         flexDirection: "row",
-                        marginVertical: 10,
+                        marginVertical: 7,
                         marginLeft: 5,
                       }}
                       rowDirection={"column"}
@@ -266,7 +266,7 @@ const TakeQuizScreen = ({ navigation }) => {
       )}
       <View
         style={{
-          flex: 3,
+          flex: 2,
           flexDirection: "row",
           justifyContent: "center",
           alignItems: "center",

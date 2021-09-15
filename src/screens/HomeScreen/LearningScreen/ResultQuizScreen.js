@@ -107,13 +107,13 @@ const ResultQuizScreen = ({
     <View style={styles.container}>
       <View style={{ alignItems: "center", flex: 1 }}>
         <ScrollView style={styles.scrollview}>
-          <View
+          {/* <View
             style={{ alignItems: "center", marginTop: 20, marginBottom: 30 }}
           >
             <Text style={{ fontSize: 16, fontWeight: "bold" }}>
               Your Time:{" "}
             </Text>
-          </View>
+          </View> */}
           <View>
             <Svg
               width={radius * 2}
@@ -229,6 +229,7 @@ const styles = StyleSheet.create({
   scrollview: {
     flex: 1,
     width: "100%",
+    marginTop: 30,
   },
   button: {
     alignItems: "center",

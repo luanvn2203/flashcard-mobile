@@ -135,8 +135,8 @@ const QuizScreen = ({ navigation }) => {
                 onPress={() => {
                   dispatch(saveQuizIdTouched(item));
                   // console.log(item.lessionId);
-                  navigation.navigate("Take Quiz");
-                  // createAlertConfirmTakeQuiz();
+                  // navigation.navigate("Take Quiz");
+                  createAlertConfirmTakeQuiz();
 
                   // setModalVisible(true);
                 }}

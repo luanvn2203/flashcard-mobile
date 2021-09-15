@@ -4,3 +4,10 @@ export const saveResultQuiz = (payload) => {
     payload: payload,
   };
 };
+
+export const getAllQuizHistoryByMe = (payload) => {
+  return {
+    type: "ALL_QUIZ_HISTORY_BY_ME",
+    payload: payload.getAllQuizHistoryByMe,
+  };
+};

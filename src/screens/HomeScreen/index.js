@@ -18,6 +18,7 @@ import {
   saveSignedInUser,
 } from "../../redux/actions/auth";
 import SettingsScreen from "./SettingScreen";
+import ProcessScreen from "../ProcessScreen";
 
 const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -68,13 +69,13 @@ const HomeScreen = ({ navigation }) => {
     // })
   };
 
-  function LearningProcessScreen({ navigation }) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>LearningProcess</Text>
-      </View>
-    );
-  }
+  // function LearningProcessScreen({ navigation }) {
+  //   return (
+  //     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+  //       <Text>LearningProcess</Text>
+  //     </View>
+  //   );
+  // }
   const Tab = createBottomTabNavigator();
 
   // console.log(currentUser)
@@ -125,7 +126,7 @@ const HomeScreen = ({ navigation }) => {
     >
       <Tab.Screen name="Learning" component={LearningScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="Process" component={LearningProcessScreen} />
+      <Tab.Screen name="Process" component={ProcessScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );

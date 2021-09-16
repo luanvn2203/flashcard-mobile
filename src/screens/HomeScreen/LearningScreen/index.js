@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { saveListSubjectInterest } from "../../../redux/actions/subject";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-
+import { Appbar } from 'react-native-paper';
 import InterestScreen from "./InterestScreen";
 import LessionScreen from "./LessionScreen";
 import FlashcardScreen from "./FlashcardScreen";
@@ -60,7 +60,18 @@ const Item = ({ title }) => (
     </Card>
   </WingBlank>
 );
-
+function CustomNavigationBar({ navigation, previous }) {
+  return (
+    <View>
+      <Appbar.Header style={styles.appHeader}>
+        {previous ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
+        <Appbar.Content title="Flashcard system" subtitle="A learning tool" />
+        <Appbar.Action icon="magnify" onPress={() => navigation.navigate("Search")} />
+        <Appbar.Action icon="home-account" onPress={() => navigation.navigate("Settings")} />
+      </Appbar.Header>
+    </View>
+  );
+}
 function LearningScreen({ navigation }) {
   const { accessToken } = useSelector((state) => state.authReducer);
   const { currentUser } = useSelector((state) => state.authReducer);
@@ -74,11 +85,7 @@ function LearningScreen({ navigation }) {
   return (
     <HomeScreenStack.Navigator
       screenOptions={{
-        headerShown: true,
-        headerStyle: { backgroundColor: "#fff" },
-        headerTintColor: "#000",
-        headerTitleStyle: {
-        },
+        header: (props) => <CustomNavigationBar {...props} />
       }}
       initialRouteName="InterestScreen"
     >
@@ -122,4 +129,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 4,
   },
+  appHeader: {
+    backgroundColor: '#fff',
+    borderBottomStartRadius: 10,
+    borderBottomEndRadius: 10
+  }
 });

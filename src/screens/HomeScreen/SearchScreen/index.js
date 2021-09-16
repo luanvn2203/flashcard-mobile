@@ -189,7 +189,7 @@ function SearchScreen({ navigation }) {
         )
     }
     return (
-        <View style={{ height: '100%', backgroundColor: '#c3c3c3' }}>
+        <View style={{ height: '100%', backgroundColor: '#e4ecfa' }}>
             <StatusBar backgroundColor='#009387' barStyle="light-content" />
             <View style={styles.action}>
                 <FontAwesome
@@ -220,7 +220,11 @@ function SearchScreen({ navigation }) {
                         renderItem={renderItem}
                         keyExtractor={(item, index) => index.toString()}
                     />}
-                {searchResult === null && searchValue !== null && <Text style={styles.notFoundSubject}>Not found subject with keyword:  {searchValue}</Text>}
+                {searchResult === null && searchValue !== null
+                    && <View>
+                        <Text style={styles.emptyText}>Opps, Not found subject with your keywords</Text>
+                        <Ionicons name='document' size={300} style={styles.iconEmpty} />
+                    </View>}
                 {searchResult === null && searchValue === null && <View style={styles.placeholderSearch}>
                     <Text style={styles.placeholderSearchText} >Type some text to search subject . . .</Text>
                     <Text style={styles.placeholderSearchText}>Example: HTML, JAVA</Text>
@@ -238,7 +242,7 @@ export default SearchScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#c3c3c3'
+        backgroundColor: '#e4ecfa'
 
     },
     action: {
@@ -272,7 +276,7 @@ const styles = StyleSheet.create({
     },
     placeholderSearchText: {
         textAlign: 'center',
-        color: '#fff',
+        color: 'grey',
         fontSize: 19,
     },
     subjectName: {
@@ -313,6 +317,17 @@ const styles = StyleSheet.create({
     },
     card: {
         marginTop: 3
+    },
+    iconEmpty: {
+        color: "#fff",
+        marginLeft: 'auto',
+        marginRight: 'auto'
+    },
+    emptyText: {
+        fontSize: 18,
+        textAlign: 'center',
+        marginTop: 20,
+        color: "gray"
     }
 
 

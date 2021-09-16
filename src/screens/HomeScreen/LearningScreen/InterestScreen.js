@@ -25,6 +25,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from '@expo/vector-icons';
 import authAPI from "../../../apis/auth.api";
 import { saveSignedInUser } from "../../../redux/actions/auth";
+import MainHeader from "../../../components/Header";
 
 const InterestScreen = ({ navigation }) => {
   const { accessToken } = useSelector((state) => state.authReducer);

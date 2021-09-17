@@ -13,6 +13,7 @@ import { saveListLessionFoundBySubjectId, saveTouchedLession } from '../../../re
 import { Ionicons } from '@expo/vector-icons';
 import flashcardAPI from '../../../apis/flashcard.api';
 import { saveTouchedFlashcard } from '../../../redux/actions/flashcard';
+import Moment from "moment";
 
 
 const FlashcardScreen = ({ navigation }) => {
@@ -49,8 +50,7 @@ const FlashcardScreen = ({ navigation }) => {
 
     const renderItem = ({ item }) => {
         return (
-            <WingBlank size='sm' style={styles.container}>
-                <Text></Text>
+            <WingBlank size='sm' style={styles.each}>
                 <TouchableOpacity
                     onPress={(e) => {
                         dispatch(saveTouchedFlashcard(item))
@@ -59,42 +59,56 @@ const FlashcardScreen = ({ navigation }) => {
                 >
                     <Card style={styles.card} >
                         <Card.Header
-                            title={item.flashcardName}
+                            title={<Text style={{ fontWeight: 'bold' }}>{item.flashcardName}</Text>}
                             thumbStyle={{ width: 30, height: 30 }}
                             // thumb="https://gw.alipayobjects.com/zos/rmsportal/MRhHctKOineMbKAZslML.jpg"
                             extra={<Text style={styles.author}>
                                 <Ionicons
                                     name="pricetag-sharp"
-                                />{"Flashcard"}</Text>}
+                                /> {"Flashcard"}</Text>}
                         />
                         <Card.Body>
                             <View style={{ minHeight: 20 }}>
-                                {/* <Text style={{ marginLeft: 16 }}>{item.dateOfCreate.slice(0,10)}</Text> */}
-                                <Text style={{ marginLeft: 16, color: 'blue' }}>{item.author}</Text>
-
+                                <Text style={styles.learnNow}>Learn now <Ionicons name="brush" /></Text>
                             </View>
                         </Card.Body>
-                        <Card.Footer
-                            content='Public'
-                            extra={item.dateOfCreate.slice(0, 10)}
-                        />
                     </Card>
                 </TouchableOpacity>
             </WingBlank>
         )
     }
-
+    console.log(lessionTouched)
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.subjectTitle} >#{lessionTouched.lessionName}</Text>
-            {listFlashcardFound !== null ? <FlatList
-                data={listFlashcardFound}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => index.toString()}
-            /> : <WingBlank style={styles.container}>
-                <Text style={{ fontSize: 30, textAlign: 'center' }}>EMPTY CONTENT</Text>
-                <Text style={styles.resMessage}>{resMessage}</Text>
-            </WingBlank>}
+            <View style={styles.subjectTitle}>
+                <Text style={styles.subjectTitleText} > <Ionicons name='book-sharp' size={35} /> {touchedSubject.subjectName}</Text>
+                <Text style={styles.lessonName}><Ionicons size={16} name='folder-open' /> {lessionTouched.lessionName}</Text>
+            </View>
+            {lessionTouched !== null ? (
+                <WingBlank style={styles.viewHeader}>
+                    <View style={styles.textHeader}>
+                        <Text style={styles.textInfo}>
+                            <Text style={styles.headContent}>Description:</Text> {lessionTouched.lessionDescription}
+                        </Text>
+                        <Text style={styles.textInfo}>
+                            <Text style={styles.headContent}>Created date:</Text>{" "}
+                            {Moment(lessionTouched.createdDate).format("YYYY-MM-DD")}
+                        </Text>
+                        {/* <Text style={styles.headContent} >View Quiz: <Text style={{ color: 'blue' }} onPress={() => { navigation.navigate("Quiz") }} >Quizzes <Ionicons size={15} name='pencil-sharp' /></Text></Text> */}
+                    </View>
+                </WingBlank>
+            ) : null}
+            <View style={styles.flashContainer}>
+                {listFlashcardFound !== null ? <FlatList
+                    data={listFlashcardFound}
+                    renderItem={renderItem}
+                    keyExtractor={(item, index) => index.toString()}
+                /> : <WingBlank style={styles.container}>
+                    <Text style={{ fontSize: 30, textAlign: 'center' }}>EMPTY CONTENT</Text>
+                    <Text style={styles.resMessage}>{resMessage}</Text>
+                </WingBlank>}
+                <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 25 }}>List Flashcards</Text>
+            </View>
         </SafeAreaView>
     );
 }
@@ -104,8 +118,28 @@ export default FlashcardScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'rgb(0,147,135)'
-
+        backgroundColor: '#e4ecfa',
+    },
+    flashContainer: {
+        backgroundColor: '#fff',
+        marginTop: 5,
+        paddingBottom: 5,
+        borderBottomEndRadius: 20,
+        borderBottomStartRadius: 20,
+        borderTopEndRadius: 20,
+        borderTopStartRadius: 20,
+        paddingTop: 10
+    },
+    each: {
+        marginTop: 15,
+    },
+    learnNow: {
+        textAlign: "center"
+    },
+    lessonName: {
+        fontSize: 20,
+        textAlign: 'center',
+        fontWeight: 'bold'
     },
     item: {
         backgroundColor: 'rgba(112,193,248,0.2)',
@@ -117,14 +151,24 @@ const styles = StyleSheet.create({
         fontSize: 32,
     },
     card: {
-        marginTop: -10
+        marginTop: -10,
+
     },
     subjectTitle: {
-        color: '#fff',
-        fontSize: 30,
-        textAlign: 'center',
-        backgroundColor: 'rgba(255,255,255,0.2)',
-        borderRadius: 4, padding: 4
+        minHeight: 50,
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderTopColor: 'grey',
+        borderLeftColor: '#fff',
+        borderBottomColor: "#fff",
+        borderRightColor: '#fff',
+        borderBottomEndRadius: 20,
+        borderBottomStartRadius: 20
+    },
+    subjectTitleText: {
+        color: '#000',
+        lineHeight: 50,
+        fontSize: 40
     },
     author: {
         marginLeft: '50%'
@@ -134,6 +178,30 @@ const styles = StyleSheet.create({
     },
     resMessage: {
         textAlign: 'center'
-    }
+    },
+    viewHeader: {
+        alignItems: "center",
+        marginTop: 5,
+        backgroundColor: "#fff",
+        paddingTop: 10,
+        paddingBottom: 10,
+        // borderRadius: 10,
+        borderBottomStartRadius: 1,
+        borderBottomEndRadius: 20,
+        borderTopEndRadius: 1,
+        borderTopStartRadius: 20
+    },
+    textHeader: {
+        justifyContent: "flex-start",
+        paddingBottom: 5,
+        marginLeft: 5
+    },
+    textInfo: {
+        color: "#000",
+        fontSize: 15,
+    },
+    headContent: {
+        fontWeight: 'bold'
+    },
 
 });

@@ -9,7 +9,8 @@ import {
     StyleSheet,
     StatusBar,
     Alert,
-    Button
+    Button,
+    Action
 } from 'react-native';
 
 
@@ -26,7 +27,8 @@ function MainHeader(props) {
     const { handleLogoutClick } = props
     return (
         <View style={styles.headerContainer}>
-            <StatusBar />
+
+
         </View>
     );
 }

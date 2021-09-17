@@ -86,8 +86,11 @@ const LessionScreen = ({ navigation }) => {
   const showConfirmDialog = (lessionId) => {
     console.log(lessionId);
     return Alert.alert(
-      "This lession is private content !",
-      "Do you want to use 7 point to request for seeing this lession content ?",
+      "Notice !",
+      `This lesson cannot access withou author permisson
+      Do you want to send a request to author first ?
+      This action will take away from you 100 point at the next time access this lesson if author approved your request.
+      Click "yes" to send.`,
       [
         {
           text: "Yes",
@@ -110,7 +113,7 @@ const LessionScreen = ({ navigation }) => {
   };
   const renderItem = ({ item }) => {
     return (
-      <WingBlank size="sm" style={styles.container}>
+      <WingBlank size="sm" style={styles.EachItem}>
         {/* <Text>Texttt</Text> */}
         <TouchableOpacity
           onPress={
@@ -135,90 +138,48 @@ const LessionScreen = ({ navigation }) => {
               }
           }
         >
-          <Card style={styles.card}>
-            <Card.Header
-              // style={{ marginTop: 5 }}
-              title={item.lessionName}
-              thumbStyle={{ width: 30, height: 30 }}
-              // thumb="https://gw.alipayobjects.com/zos/rmsportal/MRhHctKOineMbKAZslML.jpg"
-              extra={
-                <Text style={styles.author}>
-                  <Ionicons name="pricetag-sharp" />
-                  {"Lession"}
-                </Text>
-              }
-            />
-            <Card.Body>
-              <View style={{ minHeight: 20 }}>
-                <Text style={{ marginLeft: 16 }}>
-                  {item.lessionDescription}
-                </Text>
-                <Text style={{ marginLeft: 16, color: "blue" }}>
-                  {item.author}
-                </Text>
-              </View>
-            </Card.Body>
-            <Card.Footer
-              content={
-                item.statusId == 1 ? (
-                  "Public"
-                ) : (
-                  <Text style={styles.privateContent}>Private</Text>
-                )
-              }
-            />
-          </Card>
+          <View style={item.statusId === 2 ? styles.lessonContentPrivate : styles.lessonContent} >
+            <View style={item.statusId === 2 ? styles.lessonNamePrivate : styles.lessonName} >
+              <Text style={item.statusId === 2 ? styles.textLessonPrivate : styles.textLesson}>{item.lessionName}</Text>
+            </View>
+            <View style={styles.lessonDes} >
+              <Text style={styles.textDEs}>{item.lessionDescription}</Text>
+            </View>
+            <View style={styles.lessonIcon} >
+              <Text style={item.joinStatus === 'Join' ? styles.action : styles.action2}>{item.joinStatus}</Text>
+            </View>
+          </View>
         </TouchableOpacity>
       </WingBlank>
     );
   };
 
   //   console.log(subjectInfo);
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.subjectTitle}>#{touchedSubject.subjectName}</Text>
+        <View style={styles.subjectTitle}>
+          <Text style={styles.subjectTitleText} > <Ionicons name='book-sharp' size={35} /> {touchedSubject.subjectName}</Text>
+        </View>
         {subjectInfo !== null ? (
-          <View style={styles.viewHeader}>
+          <WingBlank style={styles.viewHeader}>
             <View style={styles.textHeader}>
-              <Text style={styles.textAuthor}>
-                Author: {subjectInfo.fullName}
+              <Text style={styles.textInfo}>
+                <Text style={styles.headContent}>Description:</Text> {subjectInfo.subjectDescription}
               </Text>
               <Text style={styles.textInfo}>
-                Created Date:{" "}
+                <Text style={styles.headContent}>Author:</Text> {subjectInfo.fullName}
+              </Text>
+              <Text style={styles.textInfo}>
+                <Text style={styles.headContent}>Created date:</Text>{" "}
                 {Moment(subjectInfo.createdDate).format("YYYY-MM-DD")}
               </Text>
               {total !== null && (
-                <Text style={styles.textInfo}>Total Lession: {total}</Text>
+                <Text style={styles.textInfo}><Text style={styles.headContent}>Total lesson</Text> {total}</Text>
               )}
-              <Text style={styles.textInfo}>
-                Subject Description: {subjectInfo.subjectDescription}
-              </Text>
+              <Text style={styles.headContent} >View Quiz: <Text style={{ color: 'blue' }} onPress={() => { navigation.navigate("Quiz") }} >Quizzes <Ionicons size={15} name='pencil-sharp' /></Text></Text>
             </View>
-            <TouchableOpacity
-              style={[
-                styles.button_ac,
-                {
-                  borderColor: "#009387",
-                  borderWidth: 1,
-                  marginTop: 5,
-                },
-              ]}
-              onPress={() => navigation.navigate("Quiz")}
-            >
-              <Text
-                style={[
-                  styles.buttonText,
-                  {
-                    color: "#009387",
-                  },
-                ]}
-              >
-                Available Quiz
-              </Text>
-            </TouchableOpacity>
-          </View>
+          </WingBlank>
         ) : null}
       </View>
       <View style={styles.footer}>
@@ -236,6 +197,7 @@ const LessionScreen = ({ navigation }) => {
             <Text style={styles.resMessage}>{resMessage}</Text>
           </WingBlank>
         )}
+        <Text style={styles.listLesson}>List lesson</Text>
       </View>
     </SafeAreaView>
   );
@@ -246,7 +208,7 @@ export default LessionScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#009387",
+    backgroundColor: "#e4ecfa",
   },
   item: {
     backgroundColor: "rgba(112,193,248,0.2)",
@@ -261,12 +223,15 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   subjectTitle: {
-    color: "#fff",
-    fontSize: 30,
-    textAlign: "center",
-    backgroundColor: "rgba(255,255,255,0.2)",
-    borderRadius: 4,
-    padding: 4,
+    height: 50,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderTopColor: 'grey',
+    borderLeftColor: '#fff',
+    borderBottomColor: "#fff",
+    borderRightColor: '#fff',
+    borderBottomEndRadius: 20,
+    borderBottomStartRadius: 20
   },
   author: {
     marginLeft: "50%",
@@ -277,21 +242,24 @@ const styles = StyleSheet.create({
   resMessage: {
     textAlign: "center",
   },
-  header: {
-    // flex: 5,
-    marginBottom: 8,
-    marginVertical: 8,
-    marginHorizontal: 6,
-    // borderRadius: 18,
-  },
   footer: {
-    flex: 1,
+    backgroundColor: '#fff',
+    marginTop: 5,
+    borderRadius: 10,
+    borderBottomEndRadius: 30,
+    borderBottomStartRadius: 30,
+    paddingBottom: 15
+
   },
   viewHeader: {
     alignItems: "center",
-    marginTop: 15,
+    marginTop: 5,
     backgroundColor: "#fff",
-    borderRadius: 4,
+    // borderRadius: 10,
+    borderBottomStartRadius: 1,
+    borderBottomEndRadius: 30,
+    borderTopEndRadius: 1,
+    borderTopStartRadius: 30
   },
   textHeader: {
     justifyContent: "flex-start",
@@ -310,7 +278,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   textInfo: {
-    color: "#009387",
+    color: "#000",
     fontSize: 15,
   },
   textAuthor: {
@@ -324,4 +292,84 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     color: "#FFF",
   },
+  subjectTitleText: {
+    color: '#000',
+    lineHeight: 50,
+    fontSize: 40
+  },
+  headContent: {
+    fontWeight: 'bold'
+  },
+  EachItem: {
+    marginTop: 10
+  },
+  lessonContent: {
+    backgroundColor: '#ececff',
+    borderTopEndRadius: 100,
+    borderBottomEndRadius: 100,
+    padding: 5,
+    flexDirection: 'row'
+  },
+  textLesson: {
+    color: '#000',
+    fontWeight: 'bold',
+    fontSize: 15
+  },
+  lessonName: {
+    width: '30%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 5
+  },
+  lessonDes: {
+    width: '40%',
+    alignItems: 'center'
+  },
+  lessonIcon: {
+    width: '30%',
+  },
+  action: {
+    color: 'green',
+    fontSize: 10,
+    lineHeight: 30,
+    textAlign: 'center',
+    fontWeight: 'bold'
+  },
+  action2: {
+    color: 'black',
+    fontSize: 10,
+    lineHeight: 30,
+    textAlign: 'center',
+    fontWeight: 'bold'
+
+  },
+  textDEs: {
+    color: '#000',
+    fontSize: 13,
+    marginLeft: 5
+  },
+  listLesson: {
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 20
+  },
+  lessonNamePrivate: {
+    width: '30%',
+    backgroundColor: '#e292e9',
+    borderRadius: 10,
+    padding: 5,
+  },
+  textLessonPrivate: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 15
+  },
+  lessonContentPrivate: {
+    backgroundColor: 'rgba(236,219,234,0.9)',
+    borderTopEndRadius: 100,
+    borderBottomEndRadius: 100,
+    padding: 5,
+    flexDirection: 'row'
+  }
 });

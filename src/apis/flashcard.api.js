@@ -65,6 +65,19 @@ const flashcardAPI = {
 			}
 		);
 	},
+	markAsComplete: (params, token) => {
+		const url = baseUrl.recentLearning + "/save";
+		return axiosClient.post(
+			url,
+			{ params },
+			{
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			}
+		);
+	},
+
 };
 
 export default flashcardAPI;

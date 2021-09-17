@@ -78,10 +78,10 @@ function SearchScreen({ navigation }) {
         //set state
     }
 
-    const showConfirmDialog = (subjectId) => {
+    const showConfirmDialog = (subjectId, message) => {
         return Alert.alert(
             "This subject is private by author !",
-            "Do you want to use 10 point to request for seeing this subject content ?",
+            message,
             [
                 {
                     text: "Yes",
@@ -89,6 +89,7 @@ function SearchScreen({ navigation }) {
                         // send request subject
                         const response = await privateSubjectAPI.requestSubject({ subjectId: subjectId }, accessToken)
                         if (response) {
+                            searchSubject(searchValue)
                             showToastWithGravityAndOffset(response.message)
                         }
                     },
@@ -137,6 +138,7 @@ function SearchScreen({ navigation }) {
         return (
             <View style={styles.itemResult}>
                 <TouchableOpacity
+                    style={item.statusId === 2 ? styles.touchSubject : styles.touchSubject2}
                     onPress={item.statusId === 1 ? async () => {
                         const response = await checkPublicAccessSubject(item.subjectId)
                         if (response.status === 'Success') {
@@ -154,13 +156,29 @@ function SearchScreen({ navigation }) {
                             dispatch(saveSubjectIdTouched(item))
                             navigation.navigate("Lession")
                         } else if (response.status === "Not Found Request") {
-                            showConfirmDialog(item.subjectId)
+                            showConfirmDialog(item.subjectId, response.message)
+                        } else if (response.status === 'Point Unavailable') {
+                            Alert.alert(
+                                "Notice",
+                                response.message,
+                                [
+                                    // {
+                                    //   text: "Cancel",
+                                    //   onPress: () => console.log("Cancel Pressed"),
+                                    //   style: "cancel",
+                                    // },
+                                    {
+                                        text: "OK",
+                                        // onPress: () => navigation.navigate("Result Quiz"),
+                                    },
+                                ]
+                            );
                         }
                     }}
                 >
-                    <Card style={styles.card}>
+                    <Card style={styles.card, item.statusId === 2 && { backgroundColor: '#dfdfec' }}>
                         <Card.Header
-                            title={<Text style={styles.subjectName}>{item.subjectName}</Text>}
+                            title={<Text style={styles.subjectName}>{item.subjectName} {item.statusId === 2 && <Text style={styles.privateContent} > Private</Text>}</Text>}
                             thumbStyle={{ width: 30, height: 30 }}
                             // thumb="https://gw.alipayobjects.com/zos/rmsportal/MRhHctKOineMbKAZslML.jpg"
                             extra={<Text style={styles.joinStatus} > <Ionicons name='play-forward-circle' />
@@ -292,13 +310,17 @@ const styles = StyleSheet.create({
     },
     touchSubject: {
         margin: 4,
-        borderTopColor: '#a4acba',
-        borderBottomColor: '#fff',
-        borderLeftColor: '#a4acba',
-        borderRightColor: '#fff',
-        borderWidth: 2,
+        borderTopColor: '#AC25E2',
+        borderBottomColor: '#AC25E2',
+        borderLeftColor: '#AC25E2',
+        borderRightColor: '#AC25E2',
+        borderWidth: 3,
         borderRadius: 7,
-        paddingLeft: 1
+        paddingLeft: 1,
+        backgroundColor: '#ACAAE5'
+    },
+    touchSubject2: {
+
     },
     footerExtra: {
         marginLeft: 40,
@@ -316,7 +338,8 @@ const styles = StyleSheet.create({
         fontSize: 15
     },
     card: {
-        marginTop: 3
+        marginTop: 3,
+
     },
     iconEmpty: {
         color: "#fff",
@@ -328,6 +351,11 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 20,
         color: "gray"
+    },
+    privateContent: {
+        color: '#fff',
+        fontWeight: '300',
+        backgroundColor: "#AC25E2",
     }
 
 

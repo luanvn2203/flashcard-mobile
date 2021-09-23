@@ -107,7 +107,7 @@ const subjectAPI = {
     );
   },
   checkPublic: (params, token) => {
-    console.log(params, token)
+    console.log(params, token);
     const url = baseUrl.subjectBase + "/check-public-access";
     return axiosClient.post(
       url,
@@ -130,6 +130,22 @@ const subjectAPI = {
         },
       }
     );
+  },
+  getRecentLearning: (token) => {
+    const url = baseUrl.subjectBase + "/recent-learning";
+    return axiosClient.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+  getRequestSubjectSendFromMe: (token) => {
+    const url = baseUrl.requestSubject + "/from-me";
+    return axiosClient.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   },
 };
 

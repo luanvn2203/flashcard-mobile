@@ -14,6 +14,7 @@ const HistoryScreen = ({ navigation }) => {
     console.log(res);
     if (res.status === "Success") {
       setHistoryQuiz(res.listHistory);
+      console.log(listHistory);
     }
   };
   useEffect(() => {

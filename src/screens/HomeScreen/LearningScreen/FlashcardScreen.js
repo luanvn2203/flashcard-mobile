@@ -77,7 +77,6 @@ const FlashcardScreen = ({ navigation }) => {
             </WingBlank>
         )
     }
-    console.log(lessionTouched)
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.subjectTitle}>
@@ -98,17 +97,17 @@ const FlashcardScreen = ({ navigation }) => {
                     </View>
                 </WingBlank>
             ) : null}
-            <View style={styles.flashContainer}>
-                {listFlashcardFound !== null ? <FlatList
+            {listFlashcardFound !== null ? <View style={styles.flashContainer}>
+                {listFlashcardFound !== null && <FlatList
                     data={listFlashcardFound}
                     renderItem={renderItem}
                     keyExtractor={(item, index) => index.toString()}
-                /> : <WingBlank style={styles.container}>
-                    <Text style={{ fontSize: 30, textAlign: 'center' }}>EMPTY CONTENT</Text>
-                    <Text style={styles.resMessage}>{resMessage}</Text>
-                </WingBlank>}
+                />}
                 <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 25 }}>List Flashcards</Text>
-            </View>
+            </View> : <WingBlank style={styles.container}>
+                <Text style={{ fontSize: 30, textAlign: 'center' }}>EMPTY CONTENT</Text>
+                <Text style={styles.resMessage}>{resMessage}</Text>
+            </WingBlank>}
         </SafeAreaView>
     );
 }

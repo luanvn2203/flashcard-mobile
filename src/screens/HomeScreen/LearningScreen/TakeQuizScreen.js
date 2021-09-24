@@ -97,22 +97,22 @@ const TakeQuizScreen = ({ navigation }) => {
     // console.log(response);
     if (response.status === "Success") {
       dispatch(saveResultQuiz(response));
-      // Alert.alert(
-      //   "Confirm Submit This Quiz",
-      //   "Are you sure to Submit This Quiz?",
-      //   [
-      //     {
-      //       text: "Cancel",
-      //       onPress: () => console.log("Cancel Pressed"),
-      //       style: "cancel",
-      //     },
-      //     {
-      //       text: "OK",
-      //       onPress: () => navigation.navigate("Result Quiz"),
-      //     },
-      //   ]
-      // );
-      navigation.navigate("Result Quiz");
+      Alert.alert(
+        "Confirm Submit This Quiz",
+        "Are you sure to Submit This Quiz?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          {
+            text: "OK",
+            onPress: () => navigation.navigate("Result Quiz"),
+          },
+        ]
+      );
+      // navigation.navigate("Result Quiz");
     }
   };
 
@@ -125,7 +125,6 @@ const TakeQuizScreen = ({ navigation }) => {
   };
 
   const handleCheckBoxPress = (optionId, questionId) => {
-    console.log(optionId, questionId);
     setChecked(!checked);
   };
   // console.log(userChoice);
@@ -188,7 +187,7 @@ const TakeQuizScreen = ({ navigation }) => {
                     source={{ html: listQuestion[countQuiz].questionContent }}
                     imagesMaxWidth={Dimensions.get("window").width - 100}
                     contentWidth={Dimensions.get("window").width}
-                    // tagsStyles={tagStyle}
+                  // tagsStyles={tagStyle}
                   />
                 </ScrollView>
               </View>

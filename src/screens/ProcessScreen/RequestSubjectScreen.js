@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Moment from "moment";
 import { ScrollView } from "react-native-gesture-handler";
 
-const RequestSubjectScreen = ({}) => {
+const RequestSubjectScreen = ({ }) => {
   const { requestSubjectTouched } = useSelector(
     (state) => state.subjectReducer
   );
@@ -12,10 +12,10 @@ const RequestSubjectScreen = ({}) => {
 
   useEffect(() => {
     if (requestSubjectTouched.statusName === "Waiting") {
-      setBc("yellow");
+      setBc("#70c1f8");
     } else if (requestSubjectTouched.statusName === "Denine") {
       setBc("red");
-    } else if (requestSubjectTouched.statusName === "Approce") {
+    } else if (requestSubjectTouched.statusName === "Approved") {
       setBc("green");
     }
   }, []);
@@ -23,7 +23,7 @@ const RequestSubjectScreen = ({}) => {
   console.log(requestSubjectTouched);
   return (
     <View style={{ justifyContent: "center", flex: 1, backgroundColor: bc }}>
-      <View style={{ flex: 1, backgroundColor: "yellow" }}>
+      <View style={{ flex: 1, backgroundColor: bc }}>
         {/* <Text>Header will change color with status request</Text> */}
       </View>
       <View
@@ -73,7 +73,7 @@ const RequestSubjectScreen = ({}) => {
                 flex: 6,
               }}
             >
-              {requestSubjectTouched.requestContent}
+              Request to join the subject: {requestSubjectTouched.subjectName}
             </Text>
           </View>
           <View style={{ flexDirection: "row", marginBottom: 40 }}>
@@ -121,7 +121,7 @@ const RequestSubjectScreen = ({}) => {
               justifyContent: "center",
             },
           ]}
-          // onPress={}
+        // onPress={}
         >
           <Text
             style={{

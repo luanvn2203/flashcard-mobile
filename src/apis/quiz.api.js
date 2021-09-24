@@ -42,6 +42,22 @@ const quizAPI = {
       }
     );
   },
+
+  checkAccess: (params, token) => {
+    const url = baseUrl.quizTestBase + "/check-takequiz";
+    return axiosClient.post(
+      url,
+      { params },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  }
 };
+
+
+
 
 export default quizAPI;

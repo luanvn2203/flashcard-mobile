@@ -4,13 +4,13 @@ import React, { useEffect, useState } from "react";
 import Moment from "moment";
 import { ScrollView } from "react-native-gesture-handler";
 
-const RequestLessonScreen = ({}) => {
+const RequestLessonScreen = ({ }) => {
   const { requestLessonTouched } = useSelector((state) => state.lessionReducer);
   const [bc, setBc] = useState();
 
   useEffect(() => {
     if (requestLessonTouched.statusName === "Waiting") {
-      setBc("yellow");
+      setBc("#70c1f8");
     } else if (requestLessonTouched.statusName === "Denine") {
       setBc("red");
     } else if (requestLessonTouched.statusName === "Approce") {
@@ -21,7 +21,7 @@ const RequestLessonScreen = ({}) => {
   console.log(requestLessonTouched);
   return (
     <View style={{ justifyContent: "center", flex: 1, backgroundColor: bc }}>
-      <View style={{ flex: 1, backgroundColor: "yellow" }}>
+      <View style={{ flex: 1, backgroundColor: bc }}>
         {/* <Text>Header will change color with status request</Text> */}
       </View>
       <View
@@ -132,7 +132,7 @@ const RequestLessonScreen = ({}) => {
               justifyContent: "center",
             },
           ]}
-          // onPress={}
+        // onPress={}
         >
           <Text
             style={{

@@ -13,7 +13,7 @@ import {
 import Feather from "react-native-vector-icons/Feather";
 import HTML from "react-native-render-html";
 
-const ReviewQuizScreen = ({}) => {
+const ReviewQuizScreen = ({ navigation }) => {
   const { historyQuiz } = useSelector((state) => state.reviewReducer);
   const { resultQuiz } = useSelector((state) => state.submitQuizReducer);
   const listQuestion = historyQuiz.test_detail.listQuestion;
@@ -22,8 +22,6 @@ const ReviewQuizScreen = ({}) => {
     resultQuiz.result.NumOfTakeQuizTime > 3 || historyQuiz.totalCore > 8;
   const [isClickViewResult, setIsClickViewResult] = useState(false);
 
-  console.log(historyQuiz);
-  console.log(resultQuiz.result.NumOfTakeQuizTime);
   const renderIcon = (quest, op) => {
     for (let i = 0; i < listUserOption.length; i++) {
       const opByOp = JSON.parse(listUserOption[i].optionId);
@@ -73,7 +71,6 @@ const ReviewQuizScreen = ({}) => {
         ]
       );
     }
-    console.log(isLicensed);
   };
 
   return (
@@ -172,6 +169,27 @@ const ReviewQuizScreen = ({}) => {
         >
           <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
             View All Answer
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            // flex: 1,
+            // width: "100%",
+            height: 50,
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 10,
+            backgroundColor: "#107895",
+            // borderColor: "#009387",
+            marginTop: 3,
+            // borderWidth: 1,
+            marginHorizontal: 1,
+            // marginVertical: 10,
+          }}
+          onPress={() => { navigation.navigate("Lession"); }}
+        >
+          <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
+            Go Back
           </Text>
         </TouchableOpacity>
       </View>

@@ -38,7 +38,6 @@ const ResultQuizScreen = ({
     numOfCorrect: 0,
     numOfQuestion: 0,
   });
-  console.log(resultQuiz);
   const animatedValue = React.useRef(new Animated.Value(0)).current;
 
   const [percentage, setPercentage] = useState();
@@ -50,7 +49,6 @@ const ResultQuizScreen = ({
       },
       accessToken
     );
-    console.log(res);
     if (res.status === "Success") {
       setPercentage(
         (res.history.numOfCorrect / res.history.numOfQuestion) * 100
@@ -206,9 +204,9 @@ const ResultQuizScreen = ({
                   marginTop: 15,
                 },
               ]}
-              onPress={() => navigation.navigate("Take Quiz")}
+              onPress={() => navigation.navigate("Lession")}
             >
-              <Text>Restart Quiz</Text>
+              <Text>Go back</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

@@ -9,12 +9,14 @@ import HistoryScreen from "./HistoryScreen";
 import ProcessQuizScreen from "./ProcessScreen";
 import { createStackNavigator } from "@react-navigation/stack";
 import { saveTouchedRequestLesson } from "../../redux/actions/lession";
-import { saveTouchedRequestSubject } from "../../redux/actions/subject";
+import { saveSubjectIdTouched, saveTouchedRequestSubject } from "../../redux/actions/subject";
 import { saveTouchedRecentLearning } from "../../redux/actions/subject";
 import Feather from "react-native-vector-icons/Feather";
 
 const HomeProcessScreen = ({ navigation }) => {
   const { accessToken } = useSelector((state) => state.authReducer);
+  const { currentUser } = useSelector((state) => state.authReducer);
+
   const [historyQuiz, setHistoryQuiz] = useState([]);
   const [recentLearning, setRecentLearning] = useState([]);
   const [requestLesson, setRequestLesson] = useState([]);
@@ -51,8 +53,7 @@ const HomeProcessScreen = ({ navigation }) => {
   };
   useEffect(() => {
     getData();
-  }, []);
-  console.log(historyQuiz);
+  }, [currentUser]);
   // const HomeScreenStack = createStackNavigator();
   // <HomeScreenStack.Navigator initialRouteName="History">
   //     <HomeScreenStack.Screen name="Process" component={ProcessQuizScreen} />
@@ -97,8 +98,11 @@ const HomeProcessScreen = ({ navigation }) => {
                   >
                     <TouchableOpacity
                       onPress={() => {
-                        dispatch(saveTouchedRecentLearning(recent));
-                        navigation.navigate("Recent");
+                        console.log(recent)
+                        dispatch(saveSubjectIdTouched(recent))
+                        navigation.navigate("Lession")
+                        // dispatch(saveTouchedRecentLearning(recent));
+                        // navigation.navigate("Recent");
                       }}
                       style={{
                         marginHorizontal: 5,
@@ -191,7 +195,7 @@ const HomeProcessScreen = ({ navigation }) => {
               marginBottom: 5,
             }}
           >
-            Request
+            Request sent
           </Text>
           <View
             style={{

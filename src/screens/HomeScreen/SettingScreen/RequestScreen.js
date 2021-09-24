@@ -196,7 +196,7 @@ const RequestScreen = ({ navigation }) => {
                         return (
                             <WingBlank size='md' key={subIndex} style={styles.earchRequest}>
                                 <View onPress={() => console.log(lesRequest)}>
-                                    <Text style={styles.requestText} >{lesRequest.requestFrom} request to view lession "{lesRequest.name}"   </Text>
+                                    <Text style={styles.requestText} >{lesRequest.requestFrom} request to view {lesRequest.requestContent}   </Text>
                                     <View style={styles.buttons}>
                                         <Button
                                             style={{

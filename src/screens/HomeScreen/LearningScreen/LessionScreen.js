@@ -50,7 +50,6 @@ const LessionScreen = ({ navigation }) => {
         setTotal(response.total);
         setListLessionBySubjectId(response.lession);
       } else {
-        setSubjectInfo(null);
         setResMessage(response.message);
       }
     } else {
@@ -121,23 +120,23 @@ const LessionScreen = ({ navigation }) => {
           onPress={
             item.statusId === 1
               ? (subject) => {
+                dispatch(saveTouchedLession(item));
+                navigation.navigate("Flashcard");
+              }
+              : async () => {
+                console.log(item);
+                const response = await checkAcceptAPI.checkAcceptLession(
+                  { lessionId: item.lessionId },
+                  accessToken
+                );
+                console.log(response);
+                if (response.status === "Success") {
                   dispatch(saveTouchedLession(item));
                   navigation.navigate("Flashcard");
+                } else if (response.status === "Not Found Request") {
+                  showConfirmDialog(item.lessionId);
                 }
-              : async () => {
-                  console.log(item);
-                  const response = await checkAcceptAPI.checkAcceptLession(
-                    { lessionId: item.lessionId },
-                    accessToken
-                  );
-                  console.log(response);
-                  if (response.status === "Success") {
-                    dispatch(saveTouchedLession(item));
-                    navigation.navigate("Flashcard");
-                  } else if (response.status === "Not Found Request") {
-                    showConfirmDialog(item.lessionId);
-                  }
-                }
+              }
           }
         >
           <View
@@ -240,7 +239,6 @@ const LessionScreen = ({ navigation }) => {
             <Text style={{ fontSize: 30, textAlign: "center" }}>
               EMPTY CONTENT
             </Text>
-            <Text style={styles.resMessage}>{resMessage}</Text>
           </WingBlank>
         )}
         <Text style={styles.listLesson}>List lesson</Text>
@@ -396,7 +394,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 20,
     fontWeight: "bold",
-    marginTop: 20,
+    marginTop: 30,
   },
   lessonNamePrivate: {
     width: "30%",

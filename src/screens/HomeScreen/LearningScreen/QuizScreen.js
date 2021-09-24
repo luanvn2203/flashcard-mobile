@@ -20,6 +20,7 @@ import {
 } from "react-native";
 import { saveQuizIdTouched } from "../../../redux/actions/quiz";
 import Moment from "moment";
+import subjectAPI from "../../../apis/subject.api";
 
 const QuizScreen = ({ navigation }) => {
   const { accessToken } = useSelector((state) => state.authReducer);
@@ -133,36 +134,47 @@ const QuizScreen = ({ navigation }) => {
             data={listQuiz}
             renderItem={({ item }) => (
               <TouchableOpacity
-                onPress={() => {
-                  console.log(item.lessions)
-                  // dispatch(saveQuizIdTouched(item));
-                  // createAlertConfirmTakeQuiz();
+                onPress={async () => {
+                  const response = await quizAPI.checkAccess({ quizTestId: item.id }, accessToken)
+                  if (response.status === "Success") {
+                    dispatch(saveQuizIdTouched(item));
+                    createAlertConfirmTakeQuiz();
+                  } else {
+                    console.log(response)
+                    const message = `${response.message} \nLessons require: ${response.requireLesson?.map(item => `${item.lessionName}`)}`
+                    Alert.alert("Notice !", message, [
+                      {
+                        text: "OK",
+                      },
+                    ]);
+                  }
+
                 }}
                 style={styles.item}
               >
-                <View>
+                <WingBlank size='lg'>
                   <View style={styles.startSide}>
                     <Text style={styles.textItemName}>{item.testName}</Text>
                     <Feather name="chevron-right" size={20} color="#fff" />
                   </View>
                   <View>
-                    <Text>Lessons required: </Text>
-                    {item.lessions.map((les, index) => {
+                    <Text>Lessons required: <Text style={styles.lessonRequire}>{item.lessions.map((les, index) => {
                       console.log(les)
                       return (
-                        <Text>{les.lessionName}</Text>
+                        <Text key={index.toString()} style={{ marginLeft: 3, backgroundColor: '#70c1f8', color: '#fff', padding: 2 }}>{les.lessionName}</Text>
                       )
-                    })}
+                    })} </Text></Text>
+
                   </View>
-                </View>
+                </WingBlank>
 
               </TouchableOpacity>
             )}
           />
         </View>
       ) : (
-        <View>
-          <Text>This subject has no test yet!</Text>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <Text style={{ textAlign: 'center', fontSize: 30, fontWeight: 'bold', flex: 2 }} >This subject has no test yet!</Text>
         </View>
       )}
     </View>
@@ -179,9 +191,18 @@ const styles = StyleSheet.create({
   item: {
     backgroundColor: "#fff",
     marginTop: 10,
-    borderRadius: 5
+    borderRadius: 5,
+    padding: 5,
   },
   startSide: {
     flexDirection: 'row'
+  },
+  textItemName: {
+    textAlign: "center",
+    fontWeight: 'bold',
+    fontSize: 20
+  },
+  lessonRequire: {
+    fontWeight: 'bold',
   }
 });
